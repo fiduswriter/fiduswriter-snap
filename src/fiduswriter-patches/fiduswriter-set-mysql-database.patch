@@ -1,0 +1,28 @@
+diff --git a/fiduswriter/core/default_settings.py b/fiduswriter/core/default_settings.py
+index 0d639d78..b80bc082 100755
+--- a/fiduswriter/core/default_settings.py
++++ b/fiduswriter/core/default_settings.py
+@@ -35,6 +35,23 @@ DATABASES = {
+     }
+ }
+ 
++SNAP_NAME = os.environ.get('SNAP_NAME')
++DATABASE_PASSWORD = ''
++PASSWORD_PATH = '/var/snap/{}/current/mysql/fiduswriter_password'.format(SNAP_NAME)
++if os.path.isfile(PASSWORD_PATH):
++    with open(PASSWORD_PATH, 'r') as f:
++        DATABASE_PASSWORD = f.read().strip()
++
++    DATABASES = {
++        'default': {
++            'ENGINE': 'django.db.backends.mysql',
++            'NAME': 'fiduswriter',
++            'USER': 'fiduswriter',
++            'PASSWORD': DATABASE_PASSWORD,
++            'HOST': '/tmp/sockets/mysql.sock'
++        }
++    }
++
+ # Will let any user not delete more than 5000 bibliography entries
+ # simultaneously
+ DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000

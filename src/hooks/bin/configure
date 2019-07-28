@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+
+from subprocess import call
+
+if __name__ == '__main__':
+    # Conifguration options are to be
+    # manually edited in configuration.py.
+    call(['snapctl', 'restart', 'fiduswriter.daemon'])
+    

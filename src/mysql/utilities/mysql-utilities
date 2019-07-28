@@ -5,7 +5,7 @@
 
 export MYSQL_PIDFILE="/tmp/pids/mysql.pid"
 export MYSQL_SOCKET="/tmp/sockets/mysql.sock"
-export NEXTCLOUD_PASSWORD_FILE="$SNAP_DATA/mysql/nextcloud_password"
+export FIDUSWRITER_PASSWORD_FILE="$SNAP_DATA/mysql/fiduswriter_password"
 MYSQL_SETUP_LOCKFILE="/tmp/locks/mysql-setup"
 
 mkdir -p "$(dirname "$MYSQL_PIDFILE")"
@@ -54,18 +54,18 @@ mysql_pid()
 	fi
 }
 
-mysql_set_nextcloud_password()
+mysql_set_fiduswriter_password()
 {
-	echo "$1" > "$NEXTCLOUD_PASSWORD_FILE"
-	chmod 600 "$NEXTCLOUD_PASSWORD_FILE"
+	echo "$1" > "$FIDUSWRITER_PASSWORD_FILE"
+	chmod 600 "$FIDUSWRITER_PASSWORD_FILE"
 }
 
-mysql_get_nextcloud_password()
+mysql_get_fiduswriter_password()
 {
-	if [ -f "$NEXTCLOUD_PASSWORD_FILE" ]; then
-		cat "$NEXTCLOUD_PASSWORD_FILE"
+	if [ -f "$FIDUSWRITER_PASSWORD_FILE" ]; then
+		cat "$FIDUSWRITER_PASSWORD_FILE"
 	else
-		echo "MySQL Nextcloud password has not yet been generated" >&2
+		echo "MySQL Fidus Writer password has not yet been generated" >&2
 		echo ""
 	fi
 }

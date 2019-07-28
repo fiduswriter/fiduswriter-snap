@@ -11,8 +11,13 @@ parts:
     parse-info:
       - setup.py
     source: https://github.com/fiduswriter/fiduswriter.git
+    after: [fiduswriter-patches, mysql]
+    override-pull: |
+      snapcraftctl pull
+      git apply $SNAPCRAFT_STAGE/fiduswriter-set-mysql-database.patch
     requirements:
       - fiduswriter/requirements.txt
+      - fiduswriter/mysql-requirements.txt
     stage-packages:
       - libjpeg-dev
       - python3-dev
@@ -23,11 +28,24 @@ parts:
       - wget
       - build-essential
       - libmagic1
+    stage:
+      # Remove scripts that we'll be replacing with our own
+      - -lib/python3.6/site-packages/fiduswriter/configuration.py-default
+
+  fiduswriter-customizations:
+    plugin: dump
+    source: src/fiduswriter/
+    after: [fiduswriter]
+    organize:
+      configuration.py: lib/python3.6/site-packages/fiduswriter/configuration.py-default
 
   npm:
     plugin: nodejs
     nodejs-package-manager: npm
     source: src/npm
+    prime:
+      - -package.json
+      - -package-lock.json
 
   # Download the boost headers for MySQL. Note that the version used may need to
   # be updated if the version of MySQL changes.
@@ -54,7 +72,7 @@ parts:
     override-pull: |
       snapcraftctl pull
       git apply $SNAPCRAFT_STAGE/mysql-support-compile-time-disabling-of-setpriority.patch
-    after: [boost, patches]
+    after: [boost, mysql-patches]
     configflags:
       - -DWITH_BOOST=$SNAPCRAFT_STAGE
       - -DWITH_INNODB_PAGE_CLEANER_PRIORITY=OFF
@@ -115,19 +133,47 @@ parts:
     plugin: dump
     source: src/mysql/
 
-  patches:
-    source: src/patches
+  mysql-patches:
+    source: src/mysql-patches
     plugin: dump
     prime:
       - -*
 
+  fiduswriter-patches:
+    source: src/fiduswriter-patches
+    plugin: dump
+    prime:
+      - -*
+
+  common:
+    plugin: dump
+    source: src/common/
+
+
+  hooks:
+    plugin: dump
+    source: src/hooks/
+
 apps:
-  fiduswriter:
-    command: 'bin/fiduswriter --pythonpath $SNAP_USER_DATA'
+  daemon:
+    command: 'bin/run-fiduswriter.py'
+    daemon: simple
     plugs:
       - network-bind
       - network-control
       - network-observe
+
+
+  manage:
+    command: 'bin/manage.sh'
+    plugs:
+      - network-bind
+      - network-control
+      - network-observe
+
+  createsuperuser:
+    command: 'bin/manage.sh createsuperuser'
+
   # MySQL daemon
   mysql:
     command: start_mysql
@@ -135,6 +181,16 @@ apps:
     daemon: simple
     restart-condition: always
     plugs: [network, network-bind]
+
+  # MySQL client
+  mysql-client:
+    command: run-mysql
+    plugs: [network, network-bind]
+
+  mysqldump:
+    command: mysqldump --defaults-file=$SNAP_DATA/mysql/root.ini --lock-tables nextcloud
+    plugs: [network, network-bind]
+
 layout:
   /etc/magic:
     bind-file: $SNAP/etc/magic

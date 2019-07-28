@@ -5,6 +5,6 @@
         "npm": "*"
     },
     "bin": {
-        "npm": "node_modules/.bin/npm"
+        "npm-inner": "node_modules/.bin/npm"
     }
 }
