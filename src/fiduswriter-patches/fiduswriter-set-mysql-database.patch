@@ -1,10 +1,27 @@
 diff --git a/fiduswriter/core/default_settings.py b/fiduswriter/core/default_settings.py
-index 0d639d78..b80bc082 100755
+index 6d0f07c9..103edbba 100755
 --- a/fiduswriter/core/default_settings.py
 +++ b/fiduswriter/core/default_settings.py
-@@ -35,6 +35,23 @@ DATABASES = {
-     }
- }
+@@ -1,13 +1,13 @@
+ import os
+ 
+-PORT = 8000
++PORT = 4386
+ 
+ # If you want to show debug messages, set DEBUG to True.
+-DEBUG = True
++DEBUG = False
+ 
+ # This determines whether the server is used for testing and will let the
+ # users know upon signup know that their documents may disappear.
+-TEST_SERVER = True
++TEST_SERVER = False
+ # This is the contact email that will be shown in various places all over
+ # the site.
+ CONTACT_EMAIL = 'mail@email.com'
+@@ -27,11 +27,20 @@ PROJECT_PATH = os.environ.get('PROJECT_PATH')
+ # SRC_PATH is the root path of the FW sources.
+ SRC_PATH = os.environ.get('SRC_PATH')
  
 +SNAP_NAME = os.environ.get('SNAP_NAME')
 +DATABASE_PASSWORD = ''
@@ -13,16 +30,16 @@ index 0d639d78..b80bc082 100755
 +    with open(PASSWORD_PATH, 'r') as f:
 +        DATABASE_PASSWORD = f.read().strip()
 +
-+    DATABASES = {
-+        'default': {
-+            'ENGINE': 'django.db.backends.mysql',
-+            'NAME': 'fiduswriter',
-+            'USER': 'fiduswriter',
-+            'PASSWORD': DATABASE_PASSWORD,
-+            'HOST': '/tmp/sockets/mysql.sock'
-+        }
-+    }
-+
- # Will let any user not delete more than 5000 bibliography entries
- # simultaneously
- DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000
+ DATABASES = {
+     'default': {
+-        'ENGINE': 'django.db.backends.sqlite3',
+-        'NAME': os.path.join(PROJECT_PATH, 'fiduswriter.sql'),
+-        'CONN_MAX_AGE': 15
++        'ENGINE': 'django.db.backends.mysql',
++        'NAME': 'fiduswriter',
++        'USER': 'fiduswriter',
++        'PASSWORD': DATABASE_PASSWORD,
++        'HOST': '/tmp/sockets/mysql.sock'
+     }
+ }
+ 

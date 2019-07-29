@@ -153,6 +153,15 @@ parts:
   hooks:
     plugin: dump
     source: src/hooks/
+    organize:
+      bin/: snap/hooks/
+
+hooks:
+  configure:
+    plugs:
+      - network-bind
+      - network-control
+      - network-observe
 
 apps:
   daemon:
