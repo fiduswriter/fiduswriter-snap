@@ -172,13 +172,13 @@ apps:
       - network-control
       - network-observe
 
-
   manage:
     command: 'bin/manage.sh'
     plugs:
       - network-bind
       - network-control
       - network-observe
+    adapter: full
 
   createsuperuser:
     command: 'bin/manage.sh createsuperuser'

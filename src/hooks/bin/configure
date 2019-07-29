@@ -1,30 +1,57 @@
 #!/usr/bin/env python3
 import os
-from subprocess import call, check_call
+from subprocess import call, check_call, check_output
 
 SNAP_NAME = os.environ.get('SNAP_NAME')
 SNAP = os.environ.get('SNAP')
 SNAP_DATA = os.environ.get('SNAP_DATA')
 CONFIGURE_PATH = '/var/snap/{}/current/configuration.py'.format(SNAP_NAME)
 
-if __name__ == '__main__':
-    os.environ["PATH"] += (
-        ':{}/bin'.format(SNAP)
+# Fix: due to https://bugs.launchpad.net/snapcraft/+bug/1824255
+# we need to set the paths here.
+
+MULTI_ARCH_PATHS = {
+    'x86_64': 'x86_64-linux-gnu',
+    'arm': 'arm-linux-gnueabihf',
+    'aarch64': 'aarch64-linux-gnu'
+}
+os.environ["PATH"] = (
+    '{}/usr/sbin'.format(SNAP) +
+    ':{}/usr/bin'.format(SNAP) +
+    ':{}/sbin'.format(SNAP) +
+    ':{}/bin'.format(SNAP) +
+    ':{}'.format(os.environ["PATH"])
+)
+
+LD_LIBRARY_PATH = (
+    '{}'.format(os.environ.get('SNAP_LIBRARY_PATH')) +
+    ':{}/lib'.format(SNAP) +
+    ':{}/usr/lib'.format(SNAP)
+)
+arch = check_output(['arch']).strip().decode('utf-8')
+if arch in MULTI_ARCH_PATHS:
+    LD_LIBRARY_PATH += (
+        ':{}/lib/{}'.format(SNAP, MULTI_ARCH_PATHS[arch]) +
+        ':{}/usr/lib/{}'.format(SNAP, MULTI_ARCH_PATHS[arch])
     )
-    os.environ["PYTHONPATH"] = '{}/lib/python3.6/site-packages'.format(SNAP)
-    if not os.path.isfile(CONFIGURE_PATH):
-        call([
-            '{}/bin/fiduswriter'.format(SNAP),
-            'startproject',
-            '--pythonpath',
-            SNAP_DATA
-        ])
-    check_call([
+os.environ["LD_LIBRARY_PATH"] = LD_LIBRARY_PATH
+os.environ["PYTHONPATH"] = '{}/lib/python3.6/site-packages'.format(SNAP)
+
+# end fix
+
+if not os.path.isfile(CONFIGURE_PATH):
+    call([
         '{}/bin/fiduswriter'.format(SNAP),
-        'setup',
+        'startproject',
         '--pythonpath',
         SNAP_DATA
     ])
-    # Configuration options are to be
-    # manually edited in configuration.py.
-    call(['snapctl', 'restart', 'fiduswriter.daemon'])
+check_call([
+    '{}/bin/fiduswriter'.format(SNAP),
+    'setup',
+    '--pythonpath',
+    SNAP_DATA
+])
+# Configuration options are to be
+# manually edited in configuration.py.
+call(['snapctl', 'restart', 'fiduswriter.daemon'])
