@@ -3,7 +3,7 @@ adopt-info: fiduswriter
 summary: 'An academic collaborative word processor'
 base: core18
 confinement: strict
-grade: devel
+grade: stable
 parts:
   fiduswriter:
     plugin: python
@@ -15,6 +15,12 @@ parts:
     override-pull: |
       snapcraftctl pull
       git apply $SNAPCRAFT_STAGE/fiduswriter-set-mysql-database.patch
+    python-packages:
+      - fiduswriter-books
+      - fiduswriter-citation-api-import
+      - fiduswriter-languagetool
+      - fiduswriter-ojs
+      - fiduswriter-phplist
     requirements:
       - fiduswriter/requirements.txt
       - fiduswriter/mysql-requirements.txt

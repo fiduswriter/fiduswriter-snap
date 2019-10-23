@@ -40,5 +40,11 @@
 # Example: "http://media.lawrence.com/static/"
 # STATIC_URL = '/static/'
 
-# To enable other plugins than the defualt ones, specify the plugins below
-# INSTALLED_APPS = []
+# To enable other plugins than the default ones, specify the plugins below
+INSTALLED_APPS = [
+    'book',
+    'citation_api_import',
+    #'languagetool',
+    #'ojs',
+    #'phplist',
+]
