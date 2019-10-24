@@ -4,14 +4,14 @@ index 6d0f07c9..103edbba 100755
 +++ b/fiduswriter/core/default_settings.py
 @@ -1,13 +1,13 @@
  import os
- 
+
 -PORT = 8000
 +PORT = 4386
- 
+
  # If you want to show debug messages, set DEBUG to True.
 -DEBUG = True
 +DEBUG = False
- 
+
  # This determines whether the server is used for testing and will let the
  # users know upon signup know that their documents may disappear.
 -TEST_SERVER = True
@@ -22,7 +22,7 @@ index 6d0f07c9..103edbba 100755
 @@ -27,11 +27,20 @@ PROJECT_PATH = os.environ.get('PROJECT_PATH')
  # SRC_PATH is the root path of the FW sources.
  SRC_PATH = os.environ.get('SRC_PATH')
- 
+
 +SNAP_NAME = os.environ.get('SNAP_NAME')
 +DATABASE_PASSWORD = ''
 +PASSWORD_PATH = '/var/snap/{}/current/mysql/fiduswriter_password'.format(SNAP_NAME)
@@ -42,4 +42,3 @@ index 6d0f07c9..103edbba 100755
 +        'HOST': '/tmp/sockets/mysql.sock'
      }
  }
- 
