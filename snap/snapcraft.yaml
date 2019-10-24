@@ -99,6 +99,7 @@ parts:
       - bison
       - libncurses5-dev
       - libaio-dev
+      - libssl-dev
     stage-packages:
       - libaio1
     stage:
