@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 import os
+from time import sleep
 from subprocess import call, check_call, check_output
 
 SNAP_NAME = os.environ.get('SNAP_NAME')
 SNAP = os.environ.get('SNAP')
 SNAP_DATA = os.environ.get('SNAP_DATA')
 CONFIGURE_PATH = '/var/snap/{}/current/configuration.py'.format(SNAP_NAME)
-
+PASSWORD_PATH = '/var/snap/{}/current/mysql/fiduswriter_password'.format(SNAP_NAME)
 # Fix: due to https://bugs.launchpad.net/snapcraft/+bug/1824255
 # we need to set the paths here.
 
@@ -46,6 +47,13 @@ if not os.path.isfile(CONFIGURE_PATH):
         '--pythonpath',
         SNAP_DATA
     ])
+timer = 0
+
+# We wait for the password file to be created
+while timer < 10 and not os.path.isfile(PASSWORD_PATH):
+    timer += 1
+    sleep(1)
+
 check_call([
     '{}/bin/fiduswriter'.format(SNAP),
     'setup',
