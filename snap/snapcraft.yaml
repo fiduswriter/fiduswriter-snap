@@ -45,6 +45,16 @@ parts:
     organize:
       configuration.py: lib/python3.6/site-packages/fiduswriter/configuration.py-default
 
+  languagetool:
+    plugin: dump
+    source: https://languagetool.org/download/LanguageTool-4.7.zip
+    organize:
+      LanguageTool-4.7: lt
+    stage:
+      - lt/
+    stage-packages:
+      - openjdk-8-jdk
+
   npm:
     plugin: nodejs
     nodejs-package-manager: npm
@@ -205,6 +215,15 @@ apps:
 
   mysqldump:
     command: mysqldump --defaults-file=$SNAP_DATA/mysql/root.ini --lock-tables nextcloud
+    plugs: [network, network-bind]
+
+  languagetool:
+    command: $JAVA_HOME/jre/bin/java -cp $SNAP/lt/languagetool-server.jar org.languagetool.server.HTTPServer --port 8081
+    environment:
+      JAVA_HOME: $SNAP/usr/lib/jvm/java-1.8.0-openjdk-$SNAP_ARCH
+      PATH: $JAVA_HOME/bin:$JAVA_HOME/jre/bin:$PATH
+    daemon: simple
+    restart-condition: always
     plugs: [network, network-bind]
 
 layout:
