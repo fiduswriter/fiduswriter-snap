@@ -203,6 +203,9 @@ apps:
   createsuperuser:
     command: 'bin/manage.sh createsuperuser'
 
+  setup:
+    command: 'bin/manage.sh setup'
+
   # MySQL daemon
   mysql:
     command: start_mysql
