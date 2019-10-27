@@ -30,6 +30,7 @@
 # LANGUAGE_CODE = 'en-us'
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
 
 # A list of allowed hostnames of this Fidus Writer installation
 # ALLOWED_HOSTS = [
