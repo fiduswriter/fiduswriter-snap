@@ -21,6 +21,8 @@ parts:
       - fiduswriter-languagetool
       - fiduswriter-ojs
       - fiduswriter-phplist
+      - django-otp
+      - qrcode
     requirements:
       - fiduswriter/requirements.txt
       - fiduswriter/mysql-requirements.txt
@@ -46,14 +48,15 @@ parts:
       configuration.py: lib/python3.6/site-packages/fiduswriter/configuration.py-default
 
   languagetool:
-    plugin: dump
+    plugin: gradle
     source: https://languagetool.org/download/LanguageTool-4.7.zip
-    organize:
-      LanguageTool-4.7: lt
-    stage:
-      - lt/
-    stage-packages:
-      - openjdk-8-jdk
+    override-build: |
+      cp -a LanguageTool-4.7 $SNAPCRAFT_STAGE/lt
+      cp -a LanguageTool-4.7 $SNAPCRAFT_PRIME/lt
+
+  languagetool-script:
+    plugin: dump
+    source: src/languagetool/
 
   npm:
     plugin: nodejs
@@ -218,13 +221,13 @@ apps:
     plugs: [network, network-bind]
 
   languagetool:
-    command: $JAVA_HOME/jre/bin/java -cp $SNAP/lt/languagetool-server.jar org.languagetool.server.HTTPServer --port 8081
+    command: bin/run-languagetool.py
     environment:
-      JAVA_HOME: $SNAP/usr/lib/jvm/java-1.8.0-openjdk-$SNAP_ARCH
-      PATH: $JAVA_HOME/bin:$JAVA_HOME/jre/bin:$PATH
+      JAVA_HOME: $SNAP/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH
+      PATH: $JAVA_HOME/bin:$PATH
     daemon: simple
     restart-condition: always
-    plugs: [network, network-bind]
+    plugs: [network-bind]
 
 layout:
   /etc/magic:

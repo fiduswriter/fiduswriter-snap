@@ -44,7 +44,32 @@
 INSTALLED_APPS = [
     'book',
     'citation_api_import',
-    #'languagetool',
+    'languagetool',
     #'ojs',
     #'phplist',
 ]
+
+# Languatool settings. If LT_PORT isn't a valid port number, the languagetool
+# daemon will not run.
+LT_PORT = 4387
+LT_URL = 'http://localhost:' + str(LT_PORT)
+
+# 2FA settings
+# INSTALLED_APPS += [
+    #'django_otp',
+    #'django_otp.plugins.otp_totp',
+    #'two_factor_authentication.FidusConfig',
+# ]
+# MIDDLEWARE = [
+#   'django.contrib.auth.middleware.AuthenticationMiddleware',
+#   'django_otp.middleware.OTPMiddleware'
+# ]
+# OTP_TOTP_ISSUER = 'Fidus Writer' # Add your own organization here
+# REMOVED_APPS = ['django.contrib.admin']
+
+# PHPList settings
+# PHPLIST_BASE_URL # The URL of your PHPList installation
+# PHPLIST_LOGIN # The PHPList user's username created in step 4
+# PHPLIST_PASSWORD # The PHPList user's password created in step 4
+# PHPLIST_SECRET (optional) # If you have set an obligatory secret within the PHPLIst REST API, set it here as well.
+# PHPLIST_LIST_ID # The email list id found in step 2.
