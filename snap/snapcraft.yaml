@@ -205,6 +205,11 @@ apps:
 
   setup:
     command: 'bin/manage.sh setup'
+    plugs:
+      - network-bind
+      - network-control
+      - network-observe
+    adapter: full
 
   # MySQL daemon
   mysql:
