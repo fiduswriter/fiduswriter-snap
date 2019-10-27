@@ -23,9 +23,9 @@ index 6d0f07c9..103edbba 100755
  # SRC_PATH is the root path of the FW sources.
  SRC_PATH = os.environ.get('SRC_PATH')
 
-+SNAP_NAME = os.environ.get('SNAP_NAME')
++SNAP_DATA = os.environ.get('SNAP_DATA')
 +DATABASE_PASSWORD = ''
-+PASSWORD_PATH = '/var/snap/{}/current/mysql/fiduswriter_password'.format(SNAP_NAME)
++PASSWORD_PATH = '{}/mysql/fiduswriter_password'.format(SNAP_DATA)
 +if os.path.isfile(PASSWORD_PATH):
 +    with open(PASSWORD_PATH, 'r') as f:
 +        DATABASE_PASSWORD = f.read().strip()

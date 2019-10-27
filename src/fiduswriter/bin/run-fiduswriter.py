@@ -2,10 +2,9 @@
 import os
 from subprocess import call
 
-SNAP_NAME = os.environ.get('SNAP_NAME')
 SNAP = os.environ.get('SNAP')
 SNAP_DATA = os.environ.get('SNAP_DATA')
-CONFIGURE_PATH = '/var/snap/{}/current/configuration.py'.format(SNAP_NAME)
+CONFIGURE_PATH = '{}/configuration.py'.format(SNAP_DATA)
 
 if __name__ == '__main__':
     if not os.path.isfile(CONFIGURE_PATH):
