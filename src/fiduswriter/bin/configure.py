@@ -51,7 +51,7 @@ if __name__ == '__main__':
             valid_python = True
         else:
             print('The configuration file is no longer valid.')
-            fix_it = input('Do you want to fix it? Y/n')
+            fix_it = input('Do you want to fix it? [Y/n] ')
             if fix_it.lower() not in ['', 'y', 'yes']:
                 os.remove(f_path)
                 sys.exit()
