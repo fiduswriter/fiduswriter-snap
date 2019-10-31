@@ -9,6 +9,9 @@ SNAP_DATA = os.environ.get('SNAP_DATA')
 sys.path.append(SNAP_DATA)
 
 if __name__ == '__main__':
+    if os.getuid() != 0:
+        print('This script must be run by root')
+        sys.exit()
     LT_PORT = False
     try:
         import configuration
@@ -19,6 +22,7 @@ if __name__ == '__main__':
     if LT_PORT:
         call([
             'java',
-            '-cp', '{}/lt/languagetool-server.jar'.format(SNAP), 'org.languagetool.server.HTTPServer',
+            '-cp', '{}/lt/languagetool-server.jar'.format(SNAP),
+            'org.languagetool.server.HTTPServer',
             '--port', '{}'.format(LT_PORT)
         ])

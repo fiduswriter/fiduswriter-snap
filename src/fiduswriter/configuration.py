@@ -43,11 +43,12 @@ ACCOUNT_EMAIL_VERIFICATION = 'optional'
 
 # To enable other plugins than the default ones, specify the plugins below
 INSTALLED_APPS = [
+    'user_template_manager',
     'book',
     'citation_api_import',
     'languagetool',
-    #'ojs',
-    #'phplist',
+    # 'ojs',
+    # 'phplist',
 ]
 
 # Languatool settings. If LT_PORT isn't a valid port number, the languagetool
@@ -57,9 +58,9 @@ LT_URL = 'http://localhost:' + str(LT_PORT)
 
 # 2FA settings
 # INSTALLED_APPS += [
-    #'django_otp',
-    #'django_otp.plugins.otp_totp',
-    #'two_factor_authentication.FidusConfig',
+#    'django_otp',
+#    'django_otp.plugins.otp_totp',
+#    'two_factor_authentication.FidusConfig',
 # ]
 # MIDDLEWARE = [
 #   'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -72,5 +73,6 @@ LT_URL = 'http://localhost:' + str(LT_PORT)
 # PHPLIST_BASE_URL # The URL of your PHPList installation
 # PHPLIST_LOGIN # The PHPList user's username created in step 4
 # PHPLIST_PASSWORD # The PHPList user's password created in step 4
-# PHPLIST_SECRET (optional) # If you have set an obligatory secret within the PHPLIst REST API, set it here as well.
+# PHPLIST_SECRET (optional) # If you have set an obligatory secret within
+# the PHPList REST API, set it here as well.
 # PHPLIST_LIST_ID # The email list id found in step 2.

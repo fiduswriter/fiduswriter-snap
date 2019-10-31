@@ -36,6 +36,7 @@ parts:
       - wget
       - build-essential
       - libmagic1
+      - nano
     stage:
       # Remove scripts that we'll be replacing with our own
       - -lib/python3.6/site-packages/fiduswriter/configuration.py-default
@@ -203,8 +204,8 @@ apps:
   createsuperuser:
     command: 'bin/manage.sh createsuperuser'
 
-  setup:
-    command: 'bin/manage.sh setup'
+  configure:
+    command: 'bin/configure.py'
     plugs:
       - network-bind
       - network-control
@@ -242,3 +243,7 @@ layout:
     bind-file: $SNAP/etc/magic
   /etc/wgetrc:
     bind-file: $SNAP/etc/wgetrc
+  /etc/nanorc:
+    bind-file: $SNAP/etc/nanorc
+  /usr/share/nano:
+    bind: $SNAP/usr/share/nano
