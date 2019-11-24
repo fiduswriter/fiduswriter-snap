@@ -14,7 +14,7 @@ parts:
     after: [fiduswriter-patches, mysql]
     override-pull: |
       snapcraftctl pull
-      git apply $SNAPCRAFT_STAGE/fiduswriter-set-mysql-database.patch
+      git apply $SNAPCRAFT_STAGE/fiduswriter-set-defaults.patch
     python-packages:
       - fiduswriter-books
       - fiduswriter-citation-api-import

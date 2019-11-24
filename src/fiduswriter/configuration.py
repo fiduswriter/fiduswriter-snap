@@ -9,9 +9,6 @@
 # the site.
 # CONTACT_EMAIL = 'mail@email.com'
 
-# Whether to run setup even in production mode.
-# AUTO_SETUP = True
-
 # The port to run on.
 # PORT = 4386
 

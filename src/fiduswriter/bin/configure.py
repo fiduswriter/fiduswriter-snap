@@ -41,6 +41,7 @@ if __name__ == '__main__':
     while valid_python is False:
         call([
             'nano',
+            '--restricted',
             f_path
         ])
         with open(f_path, 'r') as file:

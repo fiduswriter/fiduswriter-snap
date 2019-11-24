@@ -25,12 +25,6 @@ if __name__ == '__main__':
 
     call([
         '{}/bin/fiduswriter'.format(SNAP),
-        'setup',
-        '--pythonpath',
-        SNAP_DATA
-    ])
-    call([
-        '{}/bin/fiduswriter'.format(SNAP),
         'runserver',
         '--pythonpath',
         SNAP_DATA
