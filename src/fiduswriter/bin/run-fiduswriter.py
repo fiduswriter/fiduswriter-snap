@@ -15,7 +15,7 @@ if __name__ == '__main__':
         sys.exit()
     if not os.path.isfile(CONFIGURE_PATH):
         print('Configuration file missing')
-        sys.exit() #  The configuration hook is not done yet.
+        sys.exit()  # The configuration hook is not done yet.
     timer = 0
 
     # We wait for the password file to be created

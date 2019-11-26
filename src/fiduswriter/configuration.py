@@ -26,8 +26,20 @@
 # http://www.i18nguy.com/unicode/language-identifiers.html
 # LANGUAGE_CODE = 'en-us'
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
+
+# Send emails using an SMTP server
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'localhost'
+# EMAIL_HOST_USER = ''
+# EMAIL_HOST_PASSWORD = ''
+# EMAIL_PORT = 25
+# EMAIL_SUBJECT_PREFIX = '[Fidus Writer]'
+# EMAIL_USE_TLS = True # Port 587
+# EMAIL_USE_SSL = True # Port 465
+# DEFAULT_FROM_EMAIL = 'system@email.com'
+# SERVER_EMAIL = 'system@email.com'
+
 
 # A list of allowed hostnames of this Fidus Writer installation
 # ALLOWED_HOSTS = [

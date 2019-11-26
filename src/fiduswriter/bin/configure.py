@@ -3,7 +3,7 @@ import os
 import ast
 import sys
 import tempfile
-from subprocess import call
+from subprocess import call, check_output, CalledProcessError
 
 SNAP = os.environ.get('SNAP')
 SNAP_DATA = os.environ.get('SNAP_DATA')
@@ -14,6 +14,23 @@ def is_python(string):
     try:
         ast.parse(string)
     except SyntaxError:
+        return False
+    return True
+
+
+def is_configuration(f_path):
+    filename = os.path.basename(f_path)[:-3]
+    path = os.path.dirname(f_path)
+    try:
+        check_output([
+            '{}/bin/fiduswriter'.format(SNAP),
+            'help',
+            '--pythonpath',
+            path,
+            '--settings',
+            filename
+        ])
+    except CalledProcessError:
         return False
     return True
 
@@ -37,8 +54,8 @@ if __name__ == '__main__':
     )
     with open(f_path, 'w') as file:
         file.write(configuration)
-    valid_python = False
-    while valid_python is False:
+    valid_configuration = False
+    while valid_configuration is False:
         call([
             'nano',
             '--restricted',
@@ -47,9 +64,9 @@ if __name__ == '__main__':
         with open(f_path, 'r') as file:
             new_configuration = file.read()
         if configuration == new_configuration:
-            valid_python = True
-        elif is_python(new_configuration):
-            valid_python = True
+            valid_configuration = True
+        elif is_python(new_configuration) and is_configuration(f_path):
+            valid_configuration = True
         else:
             print('The configuration file is no longer valid.')
             fix_it = input('Do you want to fix it? [Y/n] ')
