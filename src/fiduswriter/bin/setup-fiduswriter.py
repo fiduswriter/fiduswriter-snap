@@ -16,13 +16,16 @@ if __name__ == '__main__':
     if not os.path.isfile(CONFIGURE_PATH):
         print('Configuration file missing')
         sys.exit(1)  # The configuration hook is not done yet.
-    if not os.path.isfile(PASSWORD_PATH):
-        print('Password file missing')
-        sys.exit(1)  # The configuration hook is not done yet.
+    timer = 0
+
+    # We wait for the password file to be created
+    while timer < 10 and not os.path.isfile(PASSWORD_PATH):
+        timer += 1
+        sleep(1)
 
     call([
         '{}/bin/fiduswriter'.format(SNAP),
-        'runserver',
+        'setup',
         '--pythonpath',
         SNAP_DATA
     ])
