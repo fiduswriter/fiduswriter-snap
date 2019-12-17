@@ -14,14 +14,17 @@ if __name__ == '__main__':
         print('This script must be run by root')
         sys.exit(1)
     if not os.path.isfile(CONFIGURE_PATH):
-        print('Configuration file missing')
-        sys.exit(1)  # The configuration hook is not done yet.
-    timer = 0
-
+        call([
+            '{}/bin/fiduswriter'.format(SNAP),
+            'startproject',
+            '--pythonpath',
+            SNAP_DATA
+        ])
     # We wait for the password file to be created
-    while timer < 10 and not os.path.isfile(PASSWORD_PATH):
-        timer += 1
-        sleep(1)
+    timer = 0
+    while timer < 15 and not os.path.isfile(PASSWORD_PATH):
+        timer += .1
+        sleep(.1)
 
     call([
         '{}/bin/fiduswriter'.format(SNAP),
