@@ -26,6 +26,7 @@ if __name__ == '__main__':
     call([
         '{}/bin/fiduswriter'.format(SNAP),
         'setup',
+        '--no-force-transpile',
         '--pythonpath',
         SNAP_DATA
     ])
