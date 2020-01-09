@@ -38,22 +38,13 @@ os.environ["PYTHONPATH"] = '{}/lib/python3.6/site-packages'.format(SNAP)
 
 # end fix
 
-if not os.path.isfile(CONFIGURE_PATH):
-    call([
-        '{}/bin/fiduswriter'.format(SNAP),
-        'startproject',
-        '--pythonpath',
-        SNAP_DATA
-    ])
-try:
-    check_output([
-        '{}/bin/fiduswriter'.format(SNAP),
-        'help',
-        '--pythonpath',
-        SNAP_DATA
-    ])
-except CalledProcessError:
-    sys.exit(1)
-# Configuration options are to be
-# manually edited in configuration.py.
-call(['snapctl', 'restart', 'fiduswriter.daemon'])
+if os.path.isfile(CONFIGURE_PATH):
+    try:
+        check_output([
+            '{}/bin/fiduswriter'.format(SNAP),
+            'help',
+            '--pythonpath',
+            SNAP_DATA
+        ])
+    except CalledProcessError:
+        sys.exit(1)
