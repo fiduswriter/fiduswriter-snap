@@ -185,13 +185,6 @@ hooks:
       - network-observe
 
 apps:
-  setup:
-    command: 'bin/setup-fiduswriter.py'
-    daemon: oneshot
-    plugs:
-      - network-bind
-      - network-control
-      - network-observe
   daemon:
     command: 'bin/run-fiduswriter.py'
     daemon: simple
@@ -199,8 +192,6 @@ apps:
       - network-bind
       - network-control
       - network-observe
-    after:
-      - setup
 
   manage:
     command: 'bin/manage.sh'

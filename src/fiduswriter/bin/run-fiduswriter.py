@@ -2,6 +2,7 @@
 import os
 import sys
 from subprocess import call
+from time import sleep
 
 SNAP = os.environ.get('SNAP')
 SNAP_DATA = os.environ.get('SNAP_DATA')
@@ -13,9 +14,17 @@ if __name__ == '__main__':
         print('This script must be run by root')
         sys.exit(1)
     if not os.path.isfile(CONFIGURE_PATH):
-        print('Configuration file missing')
-        # Something went wrong. This should have been caught by setup.
-        sys.exit(1)
+        call([
+            '{}/bin/fiduswriter'.format(SNAP),
+            'startproject',
+            '--pythonpath',
+            SNAP_DATA
+        ])
+    # We wait for the password file to be created
+    timer = 0
+    while timer < 15 and not os.path.isfile(PASSWORD_PATH):
+        timer += .1
+        sleep(.1)
     if not os.path.isfile(PASSWORD_PATH):
         print('Password file missing')
         # Something went wrong. This should have been caught by setup.
