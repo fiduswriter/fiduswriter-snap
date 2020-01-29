@@ -226,7 +226,7 @@ apps:
     plugs: [network, network-bind]
 
   mysqldump:
-    command: mysqldump --defaults-file=$SNAP_DATA/mysql/root.ini --lock-tables nextcloud
+    command: mysqldump --defaults-file=$SNAP_DATA/mysql/root.ini --lock-tables fiduswriter
     plugs: [network, network-bind]
 
   languagetool:
