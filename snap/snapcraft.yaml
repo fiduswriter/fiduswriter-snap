@@ -11,6 +11,7 @@ parts:
     parse-info:
       - setup.py
     source: https://github.com/fiduswriter/fiduswriter.git
+    source-branch: master
     after: [fiduswriter-patches, mysql]
     override-pull: |
       snapcraftctl pull
