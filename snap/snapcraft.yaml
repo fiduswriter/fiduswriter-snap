@@ -4,6 +4,7 @@ summary: 'An academic collaborative word processor'
 base: core18
 confinement: strict
 grade: stable
+epoch: 1*
 parts:
   fiduswriter:
     plugin: python
@@ -51,10 +52,10 @@ parts:
 
   languagetool:
     plugin: gradle
-    source: https://languagetool.org/download/LanguageTool-4.7.zip
+    source: https://languagetool.org/download/LanguageTool-4.8.zip
     override-build: |
-      cp -a LanguageTool-4.7 $SNAPCRAFT_STAGE/lt
-      cp -a LanguageTool-4.7 $SNAPCRAFT_PRIME/lt
+      cp -a LanguageTool-4.8 $SNAPCRAFT_STAGE/lt
+      cp -a LanguageTool-4.8 $SNAPCRAFT_PRIME/lt
 
   languagetool-script:
     plugin: dump
