@@ -48,12 +48,3 @@ index c22abf9c..5c6878b8 100755
  # Will let any user not delete more than 5000 bibliography entries
  # simultaneously
  DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000
-@@ -101,7 +112,7 @@ MEDIA_URL = '/media/'
- # Don't put anything in this directory yourself; store your static files
- # in apps' "static/" subdirectories and in STATICFILES_DIRS.
- # Example: "/home/media/media.lawrence.com/static/"
--STATIC_ROOT = '/tmp/django-static/'
-+STATIC_ROOT = os.path.join(PROJECT_PATH, 'static-collected/')
- # URL prefix for static files.
- # Example: "http://media.lawrence.com/static/"
- STATIC_URL = '/static/'
