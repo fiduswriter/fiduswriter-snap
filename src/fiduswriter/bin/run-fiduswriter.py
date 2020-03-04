@@ -20,6 +20,10 @@ if __name__ == '__main__':
             '--pythonpath',
             SNAP_DATA
         ])
+    # We wait for the mysql server to start
+    call([
+        '{}/bin/wait_for_mysql.sh'.format(SNAP),
+    ])
     # We wait for the password file to be created
     timer = 0
     while timer < 15 and not os.path.isfile(PASSWORD_PATH):
