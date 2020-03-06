@@ -77,7 +77,10 @@ if __name__ == '__main__':
     if configuration != new_configuration:
         with open(CONFIGURE_PATH, 'w') as file:
             file.write(new_configuration)
-        print('Your settings have been updated. Please wait while we set everything up.')
+        print(
+            'Your settings have been updated. '
+            'Please wait while we set everything up.'
+        )
         call([
             '{}/bin/fiduswriter'.format(SNAP),
             'setup',
