@@ -11,6 +11,7 @@ index c22abf9c..5c6878b8 100755
  # If you want to show debug messages, set DEBUG to True.
 -DEBUG = True
 +DEBUG = False
+ SOURCE_MAPS = False
 
  # This determines whether the server is used for testing and will let the
  # users know upon signup know that their documents may disappear.
@@ -18,8 +19,7 @@ index c22abf9c..5c6878b8 100755
 +TEST_SERVER = False
  # This is the contact email that will be shown in various places all over
  # the site.
- CONTACT_EMAIL = 'mail@email.com'
-@@ -27,14 +27,25 @@ PROJECT_PATH = os.environ.get('PROJECT_PATH')
+@@ -28,14 +28,25 @@ PROJECT_PATH = os.environ.get('PROJECT_PATH')
  # SRC_PATH is the root path of the FW sources.
  SRC_PATH = os.environ.get('SRC_PATH')
 
