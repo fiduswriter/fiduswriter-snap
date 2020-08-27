@@ -59,7 +59,7 @@ parts:
   npm:
     plugin: nodejs
     nodejs-package-manager: npm
-    nodejs-version: v12.18.3
+    nodejs-version: 12.18.3
     source: src/npm
     prime:
       - -package.json
