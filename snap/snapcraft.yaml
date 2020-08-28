@@ -17,7 +17,7 @@ parts:
       snapcraftctl pull
       git apply $SNAPCRAFT_STAGE/fiduswriter-set-defaults.patch
     python-packages:
-      - $SNAPCRAFT_PART_SRC[books,citation-api-import,languagetool,ojs,phplist]
+      - $SNAPCRAFT_PART_SRC[books,citation-api-import,languagetool,ojs,phplist,github-export]
       - django-otp
       - qrcode
     requirements:

@@ -51,4 +51,4 @@ if os.path.isfile(CONFIGURE_PATH):
         sys.exit(1)
 # Delete any old transpile dir if there is one.
 if os.path.isdir('{}/.transpile'.format(SNAP_DATA)):
-    shutil.rmtree('{}/.transpile'.format(SNAP_DATA))
+    shutil.rmtree('{}/.transpile'.format(SNAP_DATA), ignore_errors=True)

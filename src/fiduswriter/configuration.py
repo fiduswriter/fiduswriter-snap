@@ -58,12 +58,27 @@ INSTALLED_APPS = [
     'languagetool',
     # 'ojs',
     # 'phplist',
+    # 'github_export', # experimental
 ]
 
 # Languatool settings. If LT_PORT isn't a valid port number, the languagetool
 # daemon will not run.
 LT_PORT = 4387
 LT_URL = 'http://localhost:' + str(LT_PORT)
+
+# Github export settings
+#
+# Set up github as one of the connected login options. See instructions here:
+# https://django-allauth.readthedocs.io/en/latest/providers.html#github
+# Then enable the below options for the github connector.
+#
+# SOCIALACCOUNT_PROVIDERS = {
+#    'github': {
+#        'SCOPE': [
+#            'repo',
+#        ],
+#    }
+# }
 
 # 2FA settings
 # INSTALLED_APPS += [
