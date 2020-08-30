@@ -7,6 +7,7 @@ SNAP_NAME = os.environ.get('SNAP_NAME')
 SNAP = os.environ.get('SNAP')
 SNAP_DATA = os.environ.get('SNAP_DATA')
 sys.path.append(SNAP_DATA)
+JAVA_BIN = os.environ.get('JAVA_BIN')
 
 if __name__ == '__main__':
     if os.getuid() != 0:
@@ -21,7 +22,7 @@ if __name__ == '__main__':
         LT_PORT = 4387
     if LT_PORT:
         call([
-            'java',
+            JAVA_BIN,
             '-cp', '{}/lt/languagetool-server.jar'.format(SNAP),
             'org.languagetool.server.HTTPServer',
             '--port', '{}'.format(LT_PORT)

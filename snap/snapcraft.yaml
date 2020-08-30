@@ -1,7 +1,13 @@
 name: fiduswriter
 adopt-info: fiduswriter
 summary: 'An academic collaborative word processor'
-base: core18
+base: core20
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+  - build-on: armhf
+  - build-on: ppc64el
+  - build-on: s390x
 confinement: strict
 grade: stable
 epoch: 1*
@@ -46,24 +52,31 @@ parts:
       configuration.py: lib/python3.6/site-packages/fiduswriter/configuration.py-default
 
   languagetool:
-    plugin: gradle
-    source: https://languagetool.org/download/LanguageTool-4.8.zip
+    plugin: nil
     override-build: |
-      cp -a LanguageTool-4.8 $SNAPCRAFT_STAGE/lt
-      cp -a LanguageTool-4.8 $SNAPCRAFT_PRIME/lt
+      wget -O $SNAPCRAFT_PART_BUILD/LanguageTool-5.0.zip https://languagetool.org/download/LanguageTool-5.0.zip
+      unzip $SNAPCRAFT_PART_BUILD/LanguageTool-5.0.zip
+      mv $SNAPCRAFT_PART_BUILD/LanguageTool-5.0 $SNAPCRAFT_PART_INSTALL/lt
+    # mv $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk-* $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk
+    build-packages:
+      - wget
+      - unzip
+    stage-packages:
+      - openjdk-11-jre
 
   languagetool-script:
     plugin: dump
     source: src/languagetool/
 
   npm:
-    plugin: nodejs
-    nodejs-package-manager: npm
-    nodejs-version: 12.18.3
+    plugin: npm
+    npm-node-version: 12.18.3
     source: src/npm
     prime:
       - -package.json
       - -package-lock.json
+    organize:
+      LICENSE: LICENSE-npm
 
   # Download the boost headers for MySQL. Note that the version used may need to
   # be updated if the version of MySQL changes.
@@ -85,13 +98,13 @@ parts:
   mysql:
     plugin: cmake
     source: https://github.com/mysql/mysql-server.git
-    source-tag: mysql-5.7.29
+    source-tag: mysql-5.7.31
     source-depth: 1
     override-pull: |
       snapcraftctl pull
       git apply $SNAPCRAFT_STAGE/mysql-support-compile-time-disabling-of-setpriority.patch
     after: [boost, mysql-patches]
-    configflags:
+    cmake-parameters:
       - -DWITH_BOOST=$SNAPCRAFT_STAGE
       - -DWITH_INNODB_PAGE_CLEANER_PRIORITY=OFF
       - -DCMAKE_INSTALL_PREFIX=/
@@ -107,6 +120,7 @@ parts:
       - pkg-config
       - wget
       - g++
+      - make
       - cmake
       - bison
       - libncurses5-dev
@@ -212,7 +226,7 @@ apps:
 
   # MySQL daemon
   mysql:
-    command: start_mysql
+    command: bin/start_mysql
     stop-command: support-files/mysql.server stop
     daemon: simple
     restart-condition: always
@@ -220,17 +234,18 @@ apps:
 
   # MySQL client
   mysql-client:
-    command: run-mysql
+    command: bin/run-mysql
     plugs: [network, network-bind]
 
   mysqldump:
-    command: mysqldump --defaults-file=$SNAP_DATA/mysql/root.ini --lock-tables fiduswriter
+    command: bin/dump-mysql
     plugs: [network, network-bind]
 
   languagetool:
     command: bin/run-languagetool.py
     environment:
       JAVA_HOME: $SNAP/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH
+      JAVA_BIN: $SNAP/usr/lib/jvm/java-8-openjdk-$SNAP_ARCH/bin/java
       PATH: $JAVA_HOME/bin:$PATH
     daemon: simple
     restart-condition: always
