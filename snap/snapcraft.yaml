@@ -63,6 +63,10 @@ parts:
       - unzip
     stage-packages:
       - openjdk-11-jre
+      - ca-certificates
+      - ca-certificates-java
+    stage:
+      - -usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/lib/security/cacerts
 
   languagetool-script:
     plugin: dump
