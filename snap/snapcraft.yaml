@@ -252,7 +252,7 @@ apps:
     command: bin/run-languagetool.py
     environment:
       JAVA_HOME: $SNAP/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH
-      JAVA_BIN: $SNAP/usr/lib/jvm/java-8-openjdk-$SNAP_ARCH/bin/java
+      JAVA_BIN: $SNAP/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/bin/java
       PATH: $JAVA_HOME/bin:$PATH
     daemon: simple
     restart-condition: always
