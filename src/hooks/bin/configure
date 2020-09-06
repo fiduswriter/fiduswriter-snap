@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 import os
 import sys
-import shutil
-from subprocess import call, check_output, CalledProcessError
+from subprocess import check_output, CalledProcessError
 
 SNAP = os.environ.get('SNAP')
 SNAP_DATA = os.environ.get('SNAP_DATA')
@@ -35,7 +34,7 @@ if arch in MULTI_ARCH_PATHS:
         ':{}/usr/lib/{}'.format(SNAP, MULTI_ARCH_PATHS[arch])
     )
 os.environ["LD_LIBRARY_PATH"] = LD_LIBRARY_PATH
-os.environ["PYTHONPATH"] = '{}/lib/python3.6/site-packages'.format(SNAP)
+os.environ["PYTHONPATH"] = '{}/lib/python3.8/site-packages'.format(SNAP)
 
 # end fix
 
@@ -49,6 +48,3 @@ if os.path.isfile(CONFIGURE_PATH):
         ])
     except CalledProcessError:
         sys.exit(1)
-# Delete any old transpile dir if there is one.
-if os.path.isdir('{}/.transpile'.format(SNAP_DATA)):
-    shutil.rmtree('{}/.transpile'.format(SNAP_DATA), ignore_errors=True)

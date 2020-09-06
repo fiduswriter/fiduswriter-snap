@@ -44,14 +44,14 @@ parts:
       - nano
     stage:
       # Remove scripts that we'll be replacing with our own
-      - -lib/python3.6/site-packages/fiduswriter/configuration.py-default
+      - -lib/python3.8/site-packages/fiduswriter/configuration.py-default
 
   fiduswriter-customizations:
     plugin: dump
     source: src/fiduswriter/
     after: [fiduswriter]
     organize:
-      configuration.py: lib/python3.6/site-packages/fiduswriter/configuration.py-default
+      configuration.py: lib/python3.8/site-packages/fiduswriter/configuration.py-default
 
   languagetool:
     plugin: nil

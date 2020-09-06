@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 import sys
-from subprocess import call
+from subprocess import check_output, CalledProcessError
 from time import sleep
 
 SNAP = os.environ.get('SNAP')
@@ -14,16 +14,22 @@ if __name__ == '__main__':
         print('This script must be run by root')
         sys.exit(1)
     if not os.path.isfile(CONFIGURE_PATH):
-        call([
-            '{}/bin/fiduswriter'.format(SNAP),
-            'startproject',
-            '--pythonpath',
-            SNAP_DATA
-        ])
+        try:
+            check_output([
+                '{}/bin/fiduswriter'.format(SNAP),
+                'startproject',
+                '--pythonpath',
+                SNAP_DATA
+            ])
+        except CalledProcessError:
+            sys.exit(1)
     # We wait for the mysql server to start
-    call([
-        '{}/bin/wait_for_mysql.sh'.format(SNAP),
-    ])
+    try:
+        check_output([
+            '{}/bin/wait_for_mysql.sh'.format(SNAP),
+        ])
+    except CalledProcessError:
+        sys.exit(1)
     # We wait for the password file to be created
     timer = 0
     while timer < 15 and not os.path.isfile(PASSWORD_PATH):
@@ -34,9 +40,12 @@ if __name__ == '__main__':
         # Something went wrong. This should have been caught by setup.
         sys.exit(1)
 
-    call([
-        '{}/bin/fiduswriter'.format(SNAP),
-        'runserver',
-        '--pythonpath',
-        SNAP_DATA
-    ])
+    try:
+        check_output([
+            '{}/bin/fiduswriter'.format(SNAP),
+            'runserver',
+            '--pythonpath',
+            SNAP_DATA
+        ])
+    except CalledProcessError:
+        sys.exit(1)
