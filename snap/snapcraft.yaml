@@ -2,12 +2,12 @@ name: fiduswriter
 adopt-info: fiduswriter
 summary: 'An academic collaborative word processor'
 base: core20
-# architectures:
-#   - build-on: amd64
-#   - build-on: arm64
-#   - build-on: armhf
-#   - build-on: ppc64el
-#   - build-on: s390x
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+  - build-on: armhf
+  - build-on: ppc64el
+  - build-on: s390x
 confinement: strict
 grade: stable
 epoch: 1*
@@ -19,6 +19,9 @@ parts:
     source: https://github.com/fiduswriter/fiduswriter.git
     source-branch: master
     after: [fiduswriter-patches, mysql]
+    override-build: | # Removing here rather than in stage below due to snapcraft issue https://forum.snapcraft.io/t/conflicting-files-sometimes/19818/2
+      snapcraftctl build
+      rm $SNAPCRAFT_PART_INSTALL/lib/python3.8/site-packages/fiduswriter/configuration.py-default
     override-pull: |
       snapcraftctl pull
       git apply $SNAPCRAFT_STAGE/fiduswriter-set-defaults.patch
@@ -42,9 +45,9 @@ parts:
       - build-essential
       - libmagic1
       - nano
-    stage:
-      # Remove scripts that we'll be replacing with our own
-      - -lib/python3.8/site-packages/fiduswriter/configuration.py-default
+    # stage:
+    #   # Remove scripts that we'll be replacing with our own
+    #   - -lib/python3.8/site-packages/fiduswriter/configuration.py-default
 
   fiduswriter-customizations:
     plugin: dump
