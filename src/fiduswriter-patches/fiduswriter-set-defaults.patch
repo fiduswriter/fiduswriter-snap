@@ -19,7 +19,7 @@ index c22abf9c..5c6878b8 100755
 +TEST_SERVER = False
  # This is the contact email that will be shown in various places all over
  # the site.
-@@ -28,14 +28,25 @@ PROJECT_PATH = os.environ.get('PROJECT_PATH')
+@@ -30,14 +30,25 @@ PROJECT_PATH = os.environ.get('PROJECT_PATH')
  # SRC_PATH is the root path of the FW sources.
  SRC_PATH = os.environ.get('SRC_PATH')
 
@@ -34,7 +34,7 @@ index c22abf9c..5c6878b8 100755
      'default': {
 -        'ENGINE': 'django.db.backends.sqlite3',
 -        'NAME': os.path.join(PROJECT_PATH, 'fiduswriter.sql'),
--        'CONN_MAX_AGE': 15
+-        'CONN_MAX_AGE': None
 +        'ENGINE': 'django.db.backends.mysql',
 +        'NAME': 'fiduswriter',
 +        'USER': 'fiduswriter',
