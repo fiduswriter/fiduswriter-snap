@@ -19,8 +19,16 @@ def is_python(string):
 
 
 def is_configuration(f_path):
+    works = True
     filename = os.path.basename(f_path)[:-3]
     path = os.path.dirname(f_path)
+    _environ = os.environ.copy()
+    pythonpath = os.environ.get('PYTHONPATH')
+    if pythonpath:
+        pythonpath = pythonpath + os.pathsep + SNAP_DATA
+    else:
+        pythonpath = SNAP_DATA
+    os.environ["PYTHONPATH"] = os.pathsep.join(pythonpath)
     try:
         check_output([
             '{}/bin/fiduswriter'.format(SNAP),
@@ -31,8 +39,11 @@ def is_configuration(f_path):
             filename
         ])
     except CalledProcessError:
-        return False
-    return True
+        works = False
+    finally:
+        os.environ.clear()
+        os.environ.update(_environ)
+    return works
 
 
 if __name__ == '__main__':
