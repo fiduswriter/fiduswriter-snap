@@ -26,6 +26,8 @@ def is_configuration(f_path):
             '{}/bin/fiduswriter'.format(SNAP),
             'help',
             '--pythonpath',
+            SNAP_DATA,
+            '--pythonpath',
             path,
             '--settings',
             filename
