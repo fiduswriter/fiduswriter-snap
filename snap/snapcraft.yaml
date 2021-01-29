@@ -20,7 +20,6 @@ parts:
     source-branch: master
     after: [fiduswriter-patches, mysql]
     override-build: | # Removing here rather than in stage below due to snapcraft issue https://forum.snapcraft.io/t/conflicting-files-sometimes/19818/2
-      pip install wheel
       snapcraftctl build
       rm $SNAPCRAFT_PART_INSTALL/lib/python3.8/site-packages/fiduswriter/configuration.py-default
     override-pull: |
@@ -36,11 +35,13 @@ parts:
     build-packages:
       - libjpeg-dev
       - gettext
+      - python3-wheel
     stage-packages:
       - libjpeg-dev
       - python3-dev
       - python3-pip
       - python3-distutils
+      - python3-wheel
       - gettext
       - zlib1g-dev
       - wget
