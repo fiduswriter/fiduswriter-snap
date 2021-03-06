@@ -47,7 +47,7 @@ if [ $new_install = true ]; then
 		ALTER USER 'root'@'localhost' IDENTIFIED BY '$root_password';
 		CREATE USER 'fiduswriter'@'localhost' IDENTIFIED BY '$fiduswriter_password';
 		CREATE DATABASE fiduswriter;
-		GRANT ALL PRIVILEGES ON fiduswriter.* TO 'fiduswriter'@'localhost' IDENTIFIED BY '$fiduswriter_password';
+		GRANT ALL PRIVILEGES ON fiduswriter.* TO 'fiduswriter'@'localhost';
 		SQL
 	then
 		# Now the root mysql user has a password. Save that as well.
@@ -66,19 +66,9 @@ else
 	sed -ri "s|(socket\s*=\s*)/var/snap/.*mysql.sock|\1$MYSQL_SOCKET|" "$root_option_file"
 fi
 
-# Wait here until mysql is running
+# Wait here until mysql is running. MySQL 8 runs the upgrade automatically,
+# so no need to do that, anymore.
 wait_for_mysql -f
-
-# Check and upgrade mysql tables if necessary. This will return 0 if the upgrade
-# succeeded, in which case we need to restart mysql.
-echo "Checking/upgrading mysql tables if necessary..."
-if mysql_upgrade --defaults-file="$root_option_file"; then
-	echo "Restarting mysql server after upgrade..."
-	"$SNAP/support-files/mysql.server" restart
-
-	# Wait for server to come back after upgrade
-	wait_for_mysql -f
-fi
 
 # If this was a new installation, wait until the server is all up and running
 # before saving off the fiduswriter user's password. This way the presence of the
