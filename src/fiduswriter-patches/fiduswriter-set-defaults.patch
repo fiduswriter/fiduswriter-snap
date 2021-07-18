@@ -1,7 +1,7 @@
-diff --git a/fiduswriter/base/default_settings.py b/fiduswriter/base/default_settings.py
+diff --git a/fiduswriter/base/settings.py b/fiduswriter/base/settings.py
 index c22abf9c..5c6878b8 100755
---- a/fiduswriter/base/default_settings.py
-+++ b/fiduswriter/base/default_settings.py
+--- a/fiduswriter/base/settings.py
++++ b/fiduswriter/base/settings.py
 @@ -1,13 +1,13 @@
  import os
 
