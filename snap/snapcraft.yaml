@@ -62,9 +62,9 @@ parts:
   languagetool:
     plugin: nil
     override-build: |
-      wget -O $SNAPCRAFT_PART_BUILD/LanguageTool-5.0.zip https://languagetool.org/download/LanguageTool-5.0.zip
-      unzip $SNAPCRAFT_PART_BUILD/LanguageTool-5.0.zip
-      mv $SNAPCRAFT_PART_BUILD/LanguageTool-5.0 $SNAPCRAFT_PART_INSTALL/lt
+      wget -O $SNAPCRAFT_PART_BUILD/LanguageTool-5.4.zip https://languagetool.org/download/LanguageTool-5.4.zip
+      unzip $SNAPCRAFT_PART_BUILD/LanguageTool-5.4.zip
+      mv $SNAPCRAFT_PART_BUILD/LanguageTool-5.4 $SNAPCRAFT_PART_INSTALL/lt
       rm $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/lib/security/cacerts
     # mv $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk-* $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk
     build-packages:
