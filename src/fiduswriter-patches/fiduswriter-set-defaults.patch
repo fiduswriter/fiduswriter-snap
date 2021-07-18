@@ -1,48 +1,49 @@
 diff --git a/fiduswriter/base/settings.py b/fiduswriter/base/settings.py
-index c22abf9c..5c6878b8 100755
+index b0f80df72..0eb291ba8 100755
 --- a/fiduswriter/base/settings.py
 +++ b/fiduswriter/base/settings.py
-@@ -1,13 +1,13 @@
+@@ -1,14 +1,14 @@
  import os
-
+ 
 -PORT = 8000
 +PORT = 4386
-
+ 
  # If you want to show debug messages, set DEBUG to True.
 -DEBUG = True
 +DEBUG = False
  SOURCE_MAPS = False
-
+ 
  # This determines whether the server is used for testing and will let the
  # users know upon signup know that their documents may disappear.
 -TEST_SERVER = True
 +TEST_SERVER = False
  # This is the contact email that will be shown in various places all over
  # the site.
-@@ -30,14 +30,25 @@ PROJECT_PATH = os.environ.get('PROJECT_PATH')
+ CONTACT_EMAIL = "mail@email.com"
+@@ -28,14 +28,25 @@ PROJECT_PATH = os.environ.get("PROJECT_PATH")
  # SRC_PATH is the root path of the FW sources.
- SRC_PATH = os.environ.get('SRC_PATH')
-
-+SNAP_DATA = os.environ.get('SNAP_DATA')
-+DATABASE_PASSWORD = ''
-+PASSWORD_PATH = '{}/mysql/fiduswriter_password'.format(SNAP_DATA)
+ SRC_PATH = os.environ.get("SRC_PATH")
+ 
++SNAP_DATA = os.environ.get("SNAP_DATA")
++DATABASE_PASSWORD = ""
++PASSWORD_PATH = "{}/mysql/fiduswriter_password".format(SNAP_DATA)
 +if os.path.isfile(PASSWORD_PATH):
-+    with open(PASSWORD_PATH, 'r') as f:
++    with open(PASSWORD_PATH, "r") as f:
 +        DATABASE_PASSWORD = f.read().strip()
 +
  DATABASES = {
-     'default': {
--        'ENGINE': 'django.db.backends.sqlite3',
--        'NAME': os.path.join(PROJECT_PATH, 'fiduswriter.sql'),
--        'CONN_MAX_AGE': None
-+        'ENGINE': 'django.db.backends.mysql',
-+        'NAME': 'fiduswriter',
-+        'USER': 'fiduswriter',
-+        'PASSWORD': DATABASE_PASSWORD,
-+        'HOST': '/tmp/sockets/mysql.sock'
+     "default": {
+-        "ENGINE": "django.db.backends.sqlite3",
+-        "NAME": os.path.join(PROJECT_PATH, "fiduswriter.sql"),
+-        "CONN_MAX_AGE": None,
++        "ENGINE": "django.db.backends.mysql",
++        "NAME": "fiduswriter",
++        "USER": "fiduswriter",
++        "PASSWORD": DATABASE_PASSWORD,
++        "HOST": "/tmp/sockets/mysql.sock"
      }
  }
-
+ 
 +AUTO_SETUP = True
 +
  # Will let any user not delete more than 5000 bibliography entries
