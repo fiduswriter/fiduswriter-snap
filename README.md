@@ -1,8 +1,8 @@
 # fiduswriter-snap
-Snapcraft build instructions for Fidus Write.
+Snapcraft build instructions for Fidus Writer.
 
 
-Large parts of this package is based on [Snappy Nextcloud](https://github.com/nextcloud/nextcloud-snap)
+Large parts of this package are based on the the snapcraft build instructions for [Nextcloud](https://github.com/nextcloud/nextcloud-snap).
 
 ## How to install
 
