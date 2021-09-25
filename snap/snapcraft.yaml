@@ -4,7 +4,7 @@ summary: 'An academic collaborative word processor'
 base: core20
 confinement: strict
 grade: stable
-epoch: 2*
+epoch: 3*
 
 architectures:
   - build-on: amd64
