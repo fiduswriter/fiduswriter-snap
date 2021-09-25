@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+# shellcheck source=src/apache/utilities/apache-utilities
+. "$SNAP/utilities/apache-utilities"
+
+# By waiting for Apache we ensure that Fidus Writer is setup and fully-updated
+wait_for_apache
