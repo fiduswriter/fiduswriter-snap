@@ -138,59 +138,60 @@ hooks:
     plugs: [network, network-bind]
 
 parts:
-    apache:
-      plugin: apache
-      source: http://ftp.wayne.edu/apache/httpd/httpd-2.4.49.tar.bz2
-      source-checksum: sha256/65b965d6890ea90d9706595e4b7b9365b5060bec8ea723449480b4769974133b
+  apache:
+    plugin: apache
+    source: http://ftp.wayne.edu/apache/httpd/httpd-2.4.49.tar.bz2
+    source-checksum: sha256/65b965d6890ea90d9706595e4b7b9365b5060bec8ea723449480b4769974133b
 
-      override-pull: |
-        snapcraftctl pull
+    override-pull: |
+      snapcraftctl pull
 
-        # For some reason, all directories in (and after) 2.4.32 are setgid.
-        # Reported as https://bz.apache.org/bugzilla/show_bug.cgi?id=62298
-        # Work around by unsetting setgid. FIXME: Remove when bug is fixed.
-        find . -perm -g+s -exec chmod g-s {} \;
+      # For some reason, all directories in (and after) 2.4.32 are setgid.
+      # Reported as https://bz.apache.org/bugzilla/show_bug.cgi?id=62298
+      # Work around by unsetting setgid. FIXME: Remove when bug is fixed.
+      find . -perm -g+s -exec chmod g-s {} \;
 
-      # The built-in Apache modules to enable
-      modules:
-        - headers
-        - proxy
-        - proxy_fcgi
-        - setenvif
-        - env
-        - rewrite
-        - mime
-        - dir
-        - authz_core
-        - unixd
-        - alias
-        - ssl
-        - socache_shmcb
-        - slotmem_shm
-        - log_config
-        - logio
+    # The built-in Apache modules to enable
+    modules:
+      - headers
+      - proxy
+      - proxy_fcgi
+      - setenvif
+      - env
+      - rewrite
+      - mime
+      - dir
+      - authz_core
+      - unixd
+      - alias
+      - ssl
+      - socache_shmcb
+      - slotmem_shm
+      - log_config
+      - logio
 
-      filesets:
-        exclude:
-          - -man
-          - -manual
-          - -htdocs
-          - -include
-          - -build
-          - -conf/httpd.conf
-          - -conf/magic
-          - -conf/original
-          - -conf/extra
-          - -bin/apachectl
-          - -bin/envvars*
-      stage:
-        - $exclude
-      prime:
-        - $exclude
+    filesets:
+      exclude:
+        - -man
+        - -manual
+        - -htdocs
+        - -include
+        - -build
+        - -conf/httpd.conf
+        - -conf/magic
+        - -conf/original
+        - -conf/extra
+        - -bin/apachectl
+        - -bin/envvars*
+    stage:
+      - $exclude
+    prime:
+      - $exclude
 
-    apache-customizations:
-      plugin: dump
-      source: src/apache/
+  apache-customizations:
+    plugin: dump
+    source: src/apache/
+
   redis:
     plugin: redis
     source: http://download.redis.io/releases/redis-6.0.15.tar.gz
