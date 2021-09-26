@@ -1,7 +1,7 @@
 name: fiduswriter
 adopt-info: fiduswriter
 summary: 'An academic collaborative word processor'
-base: core20
+base: core18
 confinement: strict
 grade: stable
 epoch: 3*
@@ -274,8 +274,9 @@ parts:
     source: src/languagetool/
 
   npm:
-    plugin: npm
-    npm-node-version: 12.18.3
+    plugin: nodejs
+    nodejs-package-manager: npm
+    nodejs-version: 12.18.3
     source: src/npm
     prime:
       - -package.json
