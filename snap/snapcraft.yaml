@@ -1,17 +1,198 @@
 name: fiduswriter
 adopt-info: fiduswriter
 summary: 'An academic collaborative word processor'
-base: core20
+base: core18
+confinement: strict
+grade: stable
+epoch: 3*
+
 architectures:
   - build-on: amd64
   - build-on: arm64
   - build-on: armhf
   - build-on: ppc64el
   - build-on: s390x
-confinement: strict
-grade: stable
-epoch: 3*
+
+apps:
+  # Apache daemon
+  apache:
+    command: bin/run-httpd -k start -DFOREGROUND
+    stop-command: bin/httpd-wrapper -k stop
+    reload-command: bin/httpd-wrapper -k graceful
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind, removable-media]
+
+  # MySQL daemon
+  mysql:
+    command: bin/start_mysql
+    stop-command: support-files/mysql.server stop
+    reload-command: bin/reload-mysql
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind]
+
+  # redis server daemon
+  redis-server:
+    command: bin/start-redis-server
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind]
+
+  # mDNS daemon
+  mdns-publisher:
+    command: bin/delay-on-failure mdns-publisher fiduswriter
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind]
+
+  # MySQL client
+  mysql-client:
+    command: bin/run-mysql
+    plugs: [network, network-bind]
+
+  mysqldump:
+    command: bin/run-mysqldump
+    plugs: [network, network-bind]
+
+  enable-https:
+    command: bin/enable-https
+    plugs: [network, network-bind]
+
+  disable-https:
+    command: bin/disable-https
+    plugs: [network, network-bind]
+
+  renew-certs:
+    command: bin/renew-certs
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind]
+
+  import:
+    command: bin/import-data
+    plugs: [network, network-bind, removable-media]
+
+  export:
+    command: bin/export-data
+    plugs: [network, network-bind, removable-media]
+
+  logrotate:
+    command: bin/run-logrotate
+    daemon: simple
+    restart-condition: on-failure
+    timer: 00:00 # Run once a day at midnight
+
+  daemon:
+    command: 'bin/run-fiduswriter.py'
+    daemon: simple
+    plugs:
+      - network-bind
+      - network-control
+      - network-observe
+
+  manage:
+    command: 'bin/manage.sh'
+    plugs:
+      - network-bind
+      - network-control
+      - network-observe
+    adapter: full
+
+  createsuperuser:
+    command: 'bin/manage.sh createsuperuser'
+
+  configure:
+    command: 'bin/configure.py'
+    plugs:
+      - network-bind
+      - network-control
+      - network-observe
+    adapter: full
+
+  languagetool:
+    command: bin/run-languagetool.py
+    environment:
+      JAVA_HOME: $SNAP/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH
+      JAVA_BIN: $SNAP/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/bin/java
+      PATH: $JAVA_HOME/bin:$PATH
+    daemon: simple
+    restart-condition: always
+    plugs: [network-bind]
+
+hooks:
+  configure:
+    plugs: [network, network-bind]
+  pre-refresh:
+    plugs: [network, network-bind]
+
 parts:
+  apache:
+    plugin: apache
+    source: http://ftp.wayne.edu/apache/httpd/httpd-2.4.49.tar.bz2
+    source-checksum: sha256/65b965d6890ea90d9706595e4b7b9365b5060bec8ea723449480b4769974133b
+
+    override-pull: |
+      snapcraftctl pull
+
+      # For some reason, all directories in (and after) 2.4.32 are setgid.
+      # Reported as https://bz.apache.org/bugzilla/show_bug.cgi?id=62298
+      # Work around by unsetting setgid. FIXME: Remove when bug is fixed.
+      find . -perm -g+s -exec chmod g-s {} \;
+
+    # The built-in Apache modules to enable
+    modules:
+      - headers
+      - proxy
+      - proxy_fcgi
+      - setenvif
+      - env
+      - rewrite
+      - mime
+      - dir
+      - authz_core
+      - unixd
+      - alias
+      - ssl
+      - socache_shmcb
+      - slotmem_shm
+      - log_config
+      - logio
+
+    filesets:
+      exclude:
+        - -man
+        - -manual
+        - -htdocs
+        - -include
+        - -build
+        - -conf/httpd.conf
+        - -conf/magic
+        - -conf/original
+        - -conf/extra
+        - -bin/apachectl
+        - -bin/envvars*
+    stage:
+      - $exclude
+    prime:
+      - $exclude
+
+  apache-customizations:
+    plugin: dump
+    source: src/apache/
+
+  redis:
+    plugin: redis
+    source: http://download.redis.io/releases/redis-6.0.15.tar.gz
+    source-checksum: sha256/4bc295264a95bc94423c162a9eee66135a24a51eefe5f53f18fc9bde5c3a9f74
+
+  redis-customizations:
+    plugin: dump
+    source: src/redis/
+    organize:
+      config/*: config/redis/
+    after: [envsubst]
+
   fiduswriter:
     plugin: python
     parse-info:
@@ -21,7 +202,7 @@ parts:
     after: [fiduswriter-patches, mysql]
     override-build: | # Removing here rather than in stage below due to snapcraft issue https://forum.snapcraft.io/t/conflicting-files-sometimes/19818/2
       snapcraftctl build
-      rm $SNAPCRAFT_PART_INSTALL/lib/python3.8/site-packages/fiduswriter/configuration.py-default
+      rm $SNAPCRAFT_PART_INSTALL/lib/python3.6/site-packages/fiduswriter/configuration.py-default
     override-pull: |
       snapcraftctl pull
       git apply $SNAPCRAFT_STAGE/fiduswriter-set-defaults.patch
@@ -50,14 +231,14 @@ parts:
       - nano
     # stage:
     #   # Remove scripts that we'll be replacing with our own
-    #   - -lib/python3.8/site-packages/fiduswriter/configuration.py-default
+    #   - -lib/python3.6/site-packages/fiduswriter/configuration.py-default
 
   fiduswriter-customizations:
     plugin: dump
     source: src/fiduswriter/
     after: [fiduswriter]
     organize:
-      configuration.py: lib/python3.8/site-packages/fiduswriter/configuration.py-default
+      configuration.py: lib/python3.6/site-packages/fiduswriter/configuration.py-default
 
   languagetool:
     plugin: nil
@@ -82,8 +263,9 @@ parts:
     source: src/languagetool/
 
   npm:
-    plugin: npm
-    npm-node-version: 12.18.3
+    plugin: nodejs
+    nodejs-package-manager: npm
+    nodejs-version: 12.18.3
     source: src/npm
     prime:
       - -package.json
@@ -95,14 +277,8 @@ parts:
   # be updated if the version of MySQL changes.
   boost:
     plugin: dump
-    source: https://github.com/kyrofa/boost_tarball/raw/master/boost_1_59_0.tar.gz
-    source-checksum: sha1/5123209db194d66d69a9cfa5af8ff473d5941d97
-    # When building MySQL, the headers in the source directory 'boost/' are
-    # required. Previously, using the 'copy' plugin, the whole archive was put
-    # under 'boost/', making the headers reside in 'boost/boost/'. Due to a bug,
-    # we now only stage the 'boost/' directory without moving it.
-    #
-    # Bug: https://bugs.launchpad.net/snapcraft/+bug/1757093
+    source: https://sourceforge.net/projects/boost/files/boost/1.73.0/boost_1_73_0.tar.bz2
+    source-checksum: sha1/6d6ed02b29c860fd21b274fc4e1f820855e765e9
     stage:
       - boost/
     prime:
@@ -110,68 +286,68 @@ parts:
 
   mysql:
     plugin: cmake
-    source: https://github.com/mysql/mysql-server.git
-    source-tag: mysql-5.7.31
-    source-depth: 1
-    override-pull: |
-      snapcraftctl pull
-      git apply $SNAPCRAFT_STAGE/mysql-support-compile-time-disabling-of-setpriority.patch
-    after: [boost, mysql-patches]
-    cmake-parameters:
-      - -DWITH_BOOST=$SNAPCRAFT_STAGE
-      - -DWITH_INNODB_PAGE_CLEANER_PRIORITY=OFF
+    after: [boost]
+
+    # Get from https://dev.mysql.com/downloads/mysql/
+    source: https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-boost-8.0.26.tar.gz
+    source-checksum: md5/3b3e641a80005dde29ad52b4d1649c6b
+    configflags:
       - -DCMAKE_INSTALL_PREFIX=/
       - -DBUILD_CONFIG=mysql_release
+      - -DCMAKE_BUILD_TYPE=Release
       - -DWITH_UNIT_TESTS=OFF
       - -DWITH_EMBEDDED_SERVER=OFF
       - -DWITH_ARCHIVE_STORAGE_ENGINE=OFF
+      - -DWITH_EXAMPLE_STORAGE_ENGINE=OFF
       - -DWITH_BLACKHOLE_STORAGE_ENGINE=OFF
       - -DWITH_FEDERATED_STORAGE_ENGINE=OFF
       - -DWITH_PARTITION_STORAGE_ENGINE=OFF
+      - -DWITH_PERFSCHEMA_STORAGE_ENGINE=OFF
+      - -DWITH_DEBUG=OFF
+      - -DWITH_INNODB_EXTRA_DEBUG=OFF
       - -DINSTALL_MYSQLTESTDIR=
+      - -DDOWNLOAD_BOOST=OFF
+      - -DWITH_BOOST=$SNAPCRAFT_STAGE
+
+    override-build: |
+      snapcraftctl build
+      # MySQL v8 is massive. Strip it.
+      find "$SNAPCRAFT_PART_INSTALL/bin" -type f -exec sh -c 'grep -IL . "$1" || strip --strip-all "$1"' sh "{}" \;
+
     build-packages:
-      - pkg-config
-      - wget
-      - g++
-      - make
-      - cmake
-      - bison
       - libncurses5-dev
-      - libaio-dev
-      - libssl-dev
-    stage-packages:
-      - libaio1
+      - binutils
+      - gcc-8
+      - g++-8
+
     stage:
       # Remove scripts that we'll be replacing with our own
       - -support-files/mysql.server
       - -COPYING
-    prime:
-      # Remove scripts that we'll be replacing with our own
-      - -support-files/mysql.server
 
       # Remove unused binaries that waste space
+      - -bin/comp_err
+      - -bin/ibd2sdi
       - -bin/innochecksum
       - -bin/lz4_decompress
+      - -bin/myisam_ftdump
       - -bin/myisam*
+      - -bin/mysql_client_test
+      - -bin/mysql_secure_installation
+      - -bin/mysql_ssl_rsa_setup
+      - -bin/mysql_tzinfo_to_sql
+      - -bin/mysql_upgrade
       - -bin/mysqladmin
       - -bin/mysqlbinlog
-      - -bin/mysql_client_test
-      - -bin/mysql_config*
+      - -bin/mysqlcheck
       - -bin/mysqld_multi
       - -bin/mysqlimport
-      - -bin/mysql_install_db
-      - -bin/mysql_plugin
       - -bin/mysqlpump
-      - -bin/mysql_secure_installation
+      - -bin/mysqlrouter*
       - -bin/mysqlshow
       - -bin/mysqlslap
-      - -bin/mysql_ssl_rsa_setup
-      - -bin/mysqltest
-      - -bin/mysql_tzinfo_to_sql
+      - -bin/mysqltest*
       - -bin/perror
-      - -bin/replace
-      - -bin/resolveip
-      - -bin/resolve_stack_dump
       - -bin/zlib_decompress
 
   # Copy over our MySQL scripts
@@ -179,8 +355,8 @@ parts:
     plugin: dump
     source: src/mysql/
 
-  mysql-patches:
-    source: src/mysql-patches
+  patches:
+    source: src/patches
     plugin: dump
     prime:
       - -*
@@ -191,78 +367,70 @@ parts:
     prime:
       - -*
 
+  mdns-publisher:
+    plugin: godeps
+    source: https://github.com/kyrofa/mdns-publisher.git
+    go-importpath: github.com/kyrofa/mdns-publisher
+
+  delay-on-failure:
+    plugin: dump
+    source: src/delay-on-failure/
+
+  certbot:
+    plugin: python
+    python-version: python2
+    source: src/https/
+    requirements: ["requirements.txt"]
+    build-packages: [libffi-dev]
+    after: [patches]
+    override-build: |
+      snapcraftctl build
+      patch -p1 -d $SNAPCRAFT_PART_INSTALL/lib/python2.7/site-packages/certbot < $SNAPCRAFT_STAGE/certbot-remove-default-config-files.patch
+      patch -p1 -d $SNAPCRAFT_PART_INSTALL/lib/python2.7/site-packages/certbot < $SNAPCRAFT_STAGE/certbot-remove-storage-chown.patch
+
+  setup-https:
+    plugin: dump
+    source: src/https/
+    stage-packages: [openssl]
+    stage: [-etc/ssl, -requirements.txt]
+
+  import-export:
+    plugin: dump
+    source: src/import-export
+    stage-packages: [rsync]
+
   common:
     plugin: dump
     source: src/common/
-
 
   hooks:
     plugin: dump
     source: src/hooks/
     organize:
       bin/: snap/hooks/
+    stage-packages: [curl]
 
-hooks:
-  configure:
-    plugs:
-      - network-bind
-      - network-control
-      - network-observe
+  logrotate:
+    plugin: dump
+    source: src/logrotate/
+    organize:
+      config/*: config/logrotate/
+      usr/sbin/*: bin/
+    stage-packages: [logrotate]
+    stage:
+      - bin/*
+      - config/*
+      - utilities/*
+    after: [envsubst]
 
-apps:
-  daemon:
-    command: 'bin/run-fiduswriter.py'
-    daemon: simple
-    plugs:
-      - network-bind
-      - network-control
-      - network-observe
+  migrations:
+    plugin: dump
+    source: src/migrations/
 
-  manage:
-    command: 'bin/manage.sh'
-    plugs:
-      - network-bind
-      - network-control
-      - network-observe
-    adapter: full
-
-  createsuperuser:
-    command: 'bin/manage.sh createsuperuser'
-
-  configure:
-    command: 'bin/configure.py'
-    plugs:
-      - network-bind
-      - network-control
-      - network-observe
-    adapter: full
-
-  # MySQL daemon
-  mysql:
-    command: bin/start_mysql
-    stop-command: support-files/mysql.server stop
-    daemon: simple
-    restart-condition: always
-    plugs: [network, network-bind]
-
-  # MySQL client
-  mysql-client:
-    command: bin/run-mysql
-    plugs: [network, network-bind]
-
-  mysqldump:
-    command: bin/dump-mysql
-    plugs: [network, network-bind]
-
-  languagetool:
-    command: bin/run-languagetool.py
-    environment:
-      JAVA_HOME: $SNAP/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH
-      JAVA_BIN: $SNAP/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/bin/java
-      PATH: $JAVA_HOME/bin:$PATH
-    daemon: simple
-    restart-condition: always
-    plugs: [network-bind]
+  envsubst:
+    plugin: nil
+    stage-packages: [gettext-base]
+    stage: [usr/bin/envsubst]
 
 layout:
   /etc/magic:

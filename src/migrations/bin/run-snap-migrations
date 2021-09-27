@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+# shellcheck source=src/common/utilities/common-utilities
+. "$SNAP/utilities/common-utilities"
+
+previous_version="$(get_previous_snap_version)"
+
+# Now run the version-specific migrations
+migrations_directory="$SNAP/migrations"
+version_migrations="$(find "$migrations_directory" -maxdepth 1 -mindepth 1 -type d | sort -V)"
+for directory in $version_migrations; do
+	version="$(basename "$directory")"
+	if version_less_than "$previous_version" "$version"; then
+		run-parts -v --exit-on-error --regex '.*\.sh$' "$directory"
+	fi
+done
