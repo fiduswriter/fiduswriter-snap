@@ -135,6 +135,8 @@ parts:
       - binutils
       - gcc-8
       - g++-8
+      - libssl-dev
+      - pkg-config
 
     stage:
       # Remove scripts that we'll be replacing with our own
