@@ -10,7 +10,7 @@ architectures:
   - build-on: s390x
 confinement: strict
 grade: stable
-epoch: 3*
+epoch: 4*
 parts:
   fiduswriter:
     plugin: python
