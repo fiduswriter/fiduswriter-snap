@@ -23,7 +23,7 @@ index 5a8a3567e0f..0961f757b1a 100644
 @@ -2952,7 +2952,7 @@ pc_wait_finished(
  	return(all_succeeded);
  }
- 
+
 -#ifdef UNIV_LINUX
 +#if defined(UNIV_LINUX) && defined(SET_PAGE_CLEANER_PRIORITY)
  /**
@@ -35,13 +35,13 @@ index 5a8a3567e0f..0961f757b1a 100644
  }
 -#endif /* UNIV_LINUX */
 +#endif /* UNIV_LINUX && SET_PAGE_CLEANER_PRIORITY */
- 
+
  #ifdef UNIV_DEBUG
  /** Loop used to disable page cleaner threads. */
 @@ -3113,7 +3113,7 @@ DECLARE_THREAD(buf_flush_page_cleaner_coordinator)(
  		<< os_thread_pf(os_thread_get_curr_id());
  #endif /* UNIV_DEBUG_THREAD_CREATION */
- 
+
 -#ifdef UNIV_LINUX
 +#if defined(UNIV_LINUX) && defined(SET_PAGE_CLEANER_PRIORITY)
  	/* linux might be able to set different setting for each thread.
@@ -53,13 +53,13 @@ index 5a8a3567e0f..0961f757b1a 100644
  	}
 -#endif /* UNIV_LINUX */
 +#endif /* UNIV_LINUX && SET_PAGE_CLEANER_PRIORITY */
- 
+
  	buf_page_cleaner_is_active = true;
- 
+
 @@ -3481,7 +3481,7 @@ DECLARE_THREAD(buf_flush_page_cleaner_worker)(
  	page_cleaner->n_workers++;
  	mutex_exit(&page_cleaner->mutex);
- 
+
 -#ifdef UNIV_LINUX
 +#if defined(UNIV_LINUX) && defined(SET_PAGE_CLEANER_PRIORITY)
  	/* linux might be able to set different setting for each thread
@@ -71,7 +71,7 @@ index 5a8a3567e0f..0961f757b1a 100644
  	}
 -#endif /* UNIV_LINUX */
 +#endif /* UNIV_LINUX && SET_PAGE_CLEANER_PRIORITY */
- 
+
  	while (true) {
  		os_event_wait(page_cleaner->is_requested);
 diff --git a/storage/innobase/innodb.cmake b/storage/innobase/innodb.cmake
@@ -81,7 +81,7 @@ index a90fe67f492..0d0a3ad7e3b 100644
 @@ -38,6 +38,11 @@ IF(UNIX)
        LINK_LIBRARIES(aio)
      ENDIF()
- 
+
 +    OPTION(WITH_INNODB_PAGE_CLEANER_PRIORITY "Set a high priority for page cleaner threads" ON)
 +    IF(WITH_INNODB_PAGE_CLEANER_PRIORITY)
 +      ADD_DEFINITIONS("-DSET_PAGE_CLEANER_PRIORITY")
