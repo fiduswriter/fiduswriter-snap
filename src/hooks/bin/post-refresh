@@ -3,6 +3,7 @@ import os
 import shutil
 from subprocess import check_output, CalledProcessError
 
+SNAP = os.environ.get('SNAP')
 SNAP_DATA = os.environ.get('SNAP_DATA')
 TRANSPILE_DIR = '{}/.transpile'.format(SNAP_DATA)
 
@@ -15,8 +16,6 @@ if os.path.isdir(TRANSPILE_DIR):
 try:
     check_output([
         '{}/bin/run-snap-migrations'.format(SNAP),
-        '--pythonpath',
-        SNAP_DATA
     ])
 except CalledProcessError:
     sys.exit(1)

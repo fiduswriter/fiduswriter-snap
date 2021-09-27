@@ -69,17 +69,6 @@ apps:
     restart-condition: always
     plugs: [network, network-bind]
 
-  fiduswriter-cron:
-    command: bin/fiduswriter-cron
-    daemon: simple
-    restart-condition: on-failure
-    plugs: [network, network-bind, removable-media]
-
-  # Command for manually installing instead of visiting site to create admin.
-  manual-install:
-    command: bin/manual-install
-    plugs: [network, network-bind, removable-media]
-
   import:
     command: bin/import-data
     plugs: [network, network-bind, removable-media]
@@ -213,7 +202,7 @@ parts:
     after: [fiduswriter-patches, mysql]
     override-build: | # Removing here rather than in stage below due to snapcraft issue https://forum.snapcraft.io/t/conflicting-files-sometimes/19818/2
       snapcraftctl build
-      rm $SNAPCRAFT_PART_INSTALL/lib/python3.8/site-packages/fiduswriter/configuration.py-default
+      rm $SNAPCRAFT_PART_INSTALL/lib/python3.6/site-packages/fiduswriter/configuration.py-default
     override-pull: |
       snapcraftctl pull
       git apply $SNAPCRAFT_STAGE/fiduswriter-set-defaults.patch
@@ -242,14 +231,14 @@ parts:
       - nano
     # stage:
     #   # Remove scripts that we'll be replacing with our own
-    #   - -lib/python3.8/site-packages/fiduswriter/configuration.py-default
+    #   - -lib/python3.6/site-packages/fiduswriter/configuration.py-default
 
   fiduswriter-customizations:
     plugin: dump
     source: src/fiduswriter/
     after: [fiduswriter]
     organize:
-      configuration.py: lib/python3.8/site-packages/fiduswriter/configuration.py-default
+      configuration.py: lib/python3.6/site-packages/fiduswriter/configuration.py-default
 
   languagetool:
     plugin: nil
@@ -344,7 +333,6 @@ parts:
       - -bin/myisam_ftdump
       - -bin/myisam*
       - -bin/mysql_client_test
-      - -bin/mysql_config*
       - -bin/mysql_secure_installation
       - -bin/mysql_ssl_rsa_setup
       - -bin/mysql_tzinfo_to_sql
