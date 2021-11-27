@@ -58,7 +58,7 @@ INSTALLED_APPS = [
     'languagetool',
     # 'ojs',
     # 'phplist',
-    # 'github_export', # experimental
+    # 'gitrepo_export',
 ]
 
 # Languatool settings. If LT_PORT isn't a valid port number, the languagetool
@@ -66,9 +66,11 @@ INSTALLED_APPS = [
 LT_PORT = 4387
 LT_URL = 'http://localhost:' + str(LT_PORT)
 
-# Github export settings
+# Gitrepo export settings
 #
-# Set up github as one of the connected login options. See instructions here:
+# GitHub
+#
+# Set up GitHub as one of the connected login options. See instructions here:
 # https://django-allauth.readthedocs.io/en/latest/providers.html#github
 # Then enable the below options for the github connector.
 #
@@ -76,10 +78,25 @@ LT_URL = 'http://localhost:' + str(LT_PORT)
 #    'github': {
 #        'SCOPE': [
 #            'repo',
+#            'user:emai',
 #        ],
 #    }
 # }
-
+#
+# GitLab
+#
+# Set up GitLab as one of the connected login options. See instructions here:
+# https://django-allauth.readthedocs.io/en/latest/providers.html#gitlab
+# Then enable the below options for the gitlab connector.
+#
+# SOCIALACCOUNT_PROVIDERS = {
+#    'gitlab': {
+#        'SCOPE': [
+#            'api',
+#        ],
+#    }
+# }
+#
 # 2FA settings
 # INSTALLED_APPS += [
 #    'django_otp',

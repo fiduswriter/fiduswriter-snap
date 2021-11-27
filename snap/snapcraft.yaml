@@ -10,7 +10,7 @@ architectures:
   - build-on: s390x
 confinement: strict
 grade: stable
-epoch: 4*
+epoch: 5*
 parts:
   fiduswriter:
     plugin: python
@@ -189,6 +189,27 @@ parts:
     plugin: dump
     source: src/common/
 
+  logrotate:
+    plugin: dump
+    source: src/logrotate/
+    organize:
+      config/*: config/logrotate/
+      usr/sbin/*: bin/
+    stage-packages: [logrotate]
+    stage:
+      - bin/*
+      - config/*
+      - utilities/*
+    after: [envsubst]
+
+  migrations:
+    plugin: dump
+    source: src/migrations/
+
+  envsubst:
+    plugin: nil
+    stage-packages: [gettext-base]
+    stage: [usr/bin/envsubst]
 
   hooks:
     plugin: dump
@@ -243,6 +264,12 @@ apps:
   mysql-client:
     command: bin/run-mysql
     plugs: [network, network-bind]
+
+  logrotate:
+    command: bin/run-logrotate
+    daemon: simple
+    restart-condition: on-failure
+    timer: 00:00 # Run once a day at midnight
 
   mysqldump:
     command: bin/dump-mysql
