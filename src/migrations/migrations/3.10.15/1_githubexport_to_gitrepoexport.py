@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import sys
+import os
 
 SNAP_DATA = os.environ.get('SNAP_DATA')
 CONFIGURE_PATH = '{}/configuration.py'.format(SNAP_DATA)

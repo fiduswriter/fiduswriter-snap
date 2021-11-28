@@ -50,6 +50,24 @@ wait_for_command()
 	fi
 }
 
+get_data_version()
+{
+	version_file="$SNAP_DATA/version.txt"
+	if [ -f "$version_file" ]
+	then
+		version="`head -1 $version_file`"
+	else
+		version="3.10.13"
+	fi
+	echo $version
+}
+
+set_data_version()
+{
+	version_file="$SNAP_DATA/version.txt"
+	printf "%s\n" "$1" > "$version_file"
+}
+
 enable_maintenance_mode()
 {
 	if run_command "Enabling maintenance mode" occ -n maintenance:mode --on; then
