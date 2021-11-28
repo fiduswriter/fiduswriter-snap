@@ -3,7 +3,9 @@
 # shellcheck source=src/mysql/utilities/mysql-utilities
 . "$SNAP/utilities/mysql-utilities"
 
-root_option_file="$SNAP_DATA/mysql/root.ini"
+mkdir -p "${SNAP_DATA}/logs"
+chmod 750 "${SNAP_DATA}/logs"
+
 new_install=false
 
 # Make sure the database is initialized (this is safe to run if already
@@ -30,12 +32,12 @@ if [ $new_install = true ]; then
 	printf "done\n"
 
 	# Save root user information
-	cat <<-EOF > "$root_option_file"
+	cat <<-EOF > "$MYSQL_ROOT_OPTION_FILE"
 		[client]
 		socket=$MYSQL_SOCKET
 		user=root
 	EOF
-	chmod 600 "$root_option_file"
+	chmod 600 "$MYSQL_ROOT_OPTION_FILE"
 
 	# Now set everything up in one step:
 	# 1) Set the root user's password
@@ -43,7 +45,7 @@ if [ $new_install = true ]; then
 	# 3) Create the fiduswriter database
 	# 4) Grant the fiduswriter user privileges on the fiduswriter database
 	printf "Setting up users and fiduswriter database... "
-	if mysql --defaults-file="$root_option_file" <<-SQL
+	if run-mysql <<-SQL
 		ALTER USER 'root'@'localhost' IDENTIFIED BY '$root_password';
 		CREATE USER 'fiduswriter'@'localhost' IDENTIFIED BY '$fiduswriter_password';
 		CREATE DATABASE fiduswriter;
@@ -51,7 +53,7 @@ if [ $new_install = true ]; then
 		SQL
 	then
 		# Now the root mysql user has a password. Save that as well.
-		echo "password=$root_password" >> "$root_option_file"
+		echo "password=$root_password" >> "$MYSQL_ROOT_OPTION_FILE"
 		printf "done\n"
 	else
 		echo "Failed to initialize-- reverting..."
@@ -63,7 +65,7 @@ else
 	# Okay, this isn't a new installation. However, we recently changed
 	# the location of MySQL's socket (11.0.2snap1). Make sure the root
 	# option file is updated to look there instead of the old location.
-	sed -ri "s|(socket\s*=\s*)/var/snap/.*mysql.sock|\1$MYSQL_SOCKET|" "$root_option_file"
+	sed -ri "s|(socket\s*=\s*)/var/snap/.*mysql.sock|\1$MYSQL_SOCKET|" "$MYSQL_ROOT_OPTION_FILE"
 fi
 
 # Wait here until mysql is running. MySQL 8 runs the upgrade automatically,
