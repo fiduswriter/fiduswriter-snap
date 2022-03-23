@@ -10,7 +10,7 @@ architectures:
   - build-on: s390x
 confinement: strict
 grade: stable
-epoch: 5*
+epoch: 6*
 parts:
   fiduswriter:
     plugin: python
@@ -62,9 +62,9 @@ parts:
   languagetool:
     plugin: nil
     override-build: |
-      wget -O $SNAPCRAFT_PART_BUILD/LanguageTool-5.5.zip https://languagetool.org/download/LanguageTool-5.5.zip
-      unzip $SNAPCRAFT_PART_BUILD/LanguageTool-5.5.zip
-      mv $SNAPCRAFT_PART_BUILD/LanguageTool-5.5 $SNAPCRAFT_PART_INSTALL/lt
+      wget -O $SNAPCRAFT_PART_BUILD/LanguageTool-5.6.zip https://languagetool.org/download/LanguageTool-5.6.zip
+      unzip $SNAPCRAFT_PART_BUILD/LanguageTool-5.6.zip
+      mv $SNAPCRAFT_PART_BUILD/LanguageTool-5.6 $SNAPCRAFT_PART_INSTALL/lt
       rm $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/lib/security/cacerts
     # mv $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk-* $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk
     build-packages:
