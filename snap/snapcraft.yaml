@@ -38,6 +38,7 @@ parts:
       - libjpeg-dev
       - gettext
       - python3-wheel
+      - python3-pip
     stage-packages:
       - libjpeg-dev
       - python3-dev
