@@ -21,7 +21,6 @@ parts:
     after: [fiduswriter-patches, mysql]
     override-build: | # Removing here rather than in stage below due to snapcraft issue https://forum.snapcraft.io/t/conflicting-files-sometimes/19818/2
       export CRYPTOGRAPHY_DONT_BUILD_RUST=1
-      pip install -U pip wheel
       snapcraftctl build
       rm $SNAPCRAFT_PART_INSTALL/lib/python3.8/site-packages/fiduswriter/configuration.py-default
     override-pull: |
@@ -39,7 +38,9 @@ parts:
       - gettext
       - python3-wheel
       - python3-pip
+      - python3-cryptography
       - libffi-dev
+      - rustc
     stage-packages:
       - libjpeg-dev
       - python3-dev
