@@ -41,6 +41,7 @@ parts:
       - python3-cryptography
       - libffi-dev
       - rustc
+      - cargo
     stage-packages:
       - libjpeg-dev
       - python3-dev
