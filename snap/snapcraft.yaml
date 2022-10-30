@@ -90,7 +90,7 @@ parts:
 
   npm:
     plugin: npm
-    npm-node-version: 12.18.3
+    npm-node-version: 18.12.0
     source: src/npm
     prime:
       - -package.json
