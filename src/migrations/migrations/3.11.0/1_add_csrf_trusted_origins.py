@@ -29,7 +29,7 @@ configuration_str += "\nCSRF_TRUSTED_ORIGINS = ["
 if hasattr(configuration, 'ALLOWED_HOSTS') and type(configuration.ALLOWED_HOSTS) in [list, tuple]:
     for allowed_host in configuration.ALLOWED_HOSTS:
         if type(allowed_host) == str and "localhost" not in allowed_host and not is_ipaddress(allowed_host) and allowed_host != "*":
-            configuration_str += f'"https://{"*" if allowed_host.startswith(".") else ""}{allowed_host}", '
+            configuration_str += f"'https://{'*' if allowed_host.startswith('.') else ''}{allowed_host}', "
 
 configuration_str += "]\n"
 
