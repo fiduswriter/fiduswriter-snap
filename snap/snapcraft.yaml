@@ -12,17 +12,80 @@ confinement: strict
 grade: stable
 epoch: 7*
 parts:
+  python:
+    plugin: autotools
+    source: https://www.python.org/ftp/python/3.11.0/Python-3.11.0.tgz
+    autotools-configure-parameters:
+      - --enable-optimizations
+      - --prefix=/usr
+    build-packages:
+      - build-essential
+      - gdb
+      - lcov
+      - pkg-config
+      - libbz2-dev
+      - libffi-dev
+      - libgdbm-dev
+      - libgdbm-compat-dev
+      - liblzma-dev
+      - libncurses5-dev
+      - libreadline6-dev
+      - libsqlite3-dev
+      - libssl-dev
+      - lzma
+      - lzma-dev
+      - tk-dev
+      - uuid-dev
+      - zlib1g-dev
+    stage-packages:
+      - libfontconfig1
+      - libfreetype6
+      - libgdbm-compat4
+      - libgdbm6
+      - libpng16-16
+      - libtcl8.6
+      - libtk8.6
+      - libx11-6
+      - libxau6
+      - libxcb1
+      - libxdmcp6
+      - libxext6
+      - libxft2
+      - libxrender1
+      - libxss1
+    prime:
+      - -etc
+      - -lib/systemd
+      - -usr/bin/2to3
+      - -usr/bin/2to3-3.11
+      - -usr/bin/deb-systemd-helper
+      - -usr/bin/deb-systemd-invoke
+      - -usr/bin/easy_install-3.11
+      - -usr/bin/idle3
+      - -usr/bin/idle3.11
+      - -usr/bin/pydoc3
+      - -usr/bin/pydoc3.11
+      - -usr/bin/python3.11-config
+      - -usr/bin/python3-config
+      - -usr/bin/uuidgen
+      - -usr/include
+      - -usr/lib/*.a
+      - -usr/lib/pkgconfig
+      - -usr/lib/python3.11/test
+      - -usr/sbin
+      - -usr/share
+      - -var
   fiduswriter:
     plugin: python
     parse-info:
       - setup.py
     source: https://github.com/fiduswriter/fiduswriter.git
     source-branch: main
-    after: [fiduswriter-patches, mysql]
+    after: [python, fiduswriter-patches, mysql]
     override-build: | # Removing here rather than in stage below due to snapcraft issue https://forum.snapcraft.io/t/conflicting-files-sometimes/19818/2
       export CRYPTOGRAPHY_DONT_BUILD_RUST=1
       snapcraftctl build
-      rm $SNAPCRAFT_PART_INSTALL/lib/python3.8/site-packages/fiduswriter/configuration.py-default
+      rm $SNAPCRAFT_PART_INSTALL/lib/python3.11/site-packages/fiduswriter/configuration.py-default
     override-pull: |
       snapcraftctl pull
       git apply $SNAPCRAFT_STAGE/fiduswriter-set-defaults.patch
@@ -30,40 +93,44 @@ parts:
       - $SNAPCRAFT_PART_SRC[books,citation-api-import,languagetool,ojs,phplist,gitrepo-export,payment-paddle]
       - django-otp
       - qrcode
+      - wheel
+      - pip
+      - cryptography
+      - setuptools
     requirements:
       - fiduswriter/requirements.txt
       - fiduswriter/mysql-requirements.txt
     build-packages:
       - libjpeg-dev
       - gettext
-      - python3-wheel
-      - python3-pip
-      - python3-cryptography
       - libffi-dev
       - rustc
       - cargo
     stage-packages:
       - libjpeg-dev
-      - python3-dev
-      - python3-pip
-      - python3-distutils
-      - python3-wheel
       - gettext
       - zlib1g-dev
       - wget
       - build-essential
       - libmagic1
       - nano
+    build-environment:
+      - SNAPCRAFT_PYTHON_INTERPRETER: python3.11
+      - C_INCLUDE_PATH: $SNAPCRAFT_STAGE/usr/include/python3.11/
+    stage:
+      - -bin/python
+      - -bin/python3
+      - -bin/python3.11
     # stage:
     #   # Remove scripts that we'll be replacing with our own
-    #   - -lib/python3.8/site-packages/fiduswriter/configuration.py-default
+    #   - -lib/python3.11/site-packages/fiduswriter/configuration.py-default
 
   fiduswriter-customizations:
     plugin: dump
     source: src/fiduswriter/
     after: [fiduswriter]
     organize:
-      configuration.py: lib/python3.8/site-packages/fiduswriter/configuration.py-default
+      configuration.py: lib/python3.11/site-packages/fiduswriter/configuration.py-default
 
   languagetool:
     plugin: nil
@@ -239,17 +306,23 @@ apps:
       - network-bind
       - network-control
       - network-observe
+    environment:
+      PYTHONPATH: $SNAP/lib/python3.11/site-packages
 
   manage:
-    command: 'bin/manage.sh'
+    command: 'bin/manage.py'
     plugs:
       - network-bind
       - network-control
       - network-observe
     adapter: full
+    environment:
+      PYTHONPATH: $SNAP/lib/python3.11/site-packages
 
   createsuperuser:
-    command: 'bin/manage.sh createsuperuser'
+    command: 'bin/manage.py createsuperuser'
+    environment:
+      PYTHONPATH: $SNAP/lib/python3.11/site-packages
 
   configure:
     command: 'bin/configure.py'
@@ -258,6 +331,8 @@ apps:
       - network-control
       - network-observe
     adapter: full
+    environment:
+      PYTHONPATH: $SNAP/lib/python3.11/site-packages
 
   # MySQL daemon
   mysql:
@@ -289,6 +364,7 @@ apps:
       JAVA_HOME: $SNAP/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH
       JAVA_BIN: $SNAP/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/bin/java
       PATH: $JAVA_HOME/bin:$PATH
+      PYTHONPATH: $SNAP/lib/python3.11/site-packages
     daemon: simple
     restart-condition: always
     plugs: [network-bind]

@@ -9,7 +9,6 @@ SNAP = os.environ.get('SNAP')
 SNAP_DATA = os.environ.get('SNAP_DATA')
 CONFIGURE_PATH = '{}/configuration.py'.format(SNAP_DATA)
 
-
 def is_python(string):
     try:
         ast.parse(string)
