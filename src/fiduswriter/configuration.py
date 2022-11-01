@@ -26,7 +26,7 @@
 # http://www.i18nguy.com/unicode/language-identifiers.html
 # LANGUAGE_CODE = 'en-us'
 
-ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_EMAIL_VERIFICATION = "optional"
 
 # Send emails using an SMTP server
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -52,10 +52,10 @@ ACCOUNT_EMAIL_VERIFICATION = 'optional'
 
 # To enable other plugins than the default ones, specify the plugins below
 INSTALLED_APPS = [
-    'user_template_manager',
-    'book',
-    'citation_api_import',
-    'languagetool',
+    "user_template_manager",
+    "book",
+    "citation_api_import",
+    "languagetool",
     # 'ojs',
     # 'phplist',
     # 'gitrepo_export',
@@ -64,7 +64,7 @@ INSTALLED_APPS = [
 # Languatool settings. If LT_PORT isn't a valid port number, the languagetool
 # daemon will not run.
 LT_PORT = 4387
-LT_URL = 'http://localhost:' + str(LT_PORT)
+LT_URL = "http://localhost:" + str(LT_PORT)
 
 # Gitrepo export settings
 #
