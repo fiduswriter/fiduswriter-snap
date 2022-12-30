@@ -97,6 +97,7 @@ parts:
       - pip
       - cryptography
       - setuptools
+      - babel
     requirements:
       - fiduswriter/requirements.txt
       - fiduswriter/mysql-requirements.txt
