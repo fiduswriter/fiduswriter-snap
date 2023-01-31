@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     # 'ojs',
     # 'phplist',
     # 'gitrepo_export',
+    # 'website',
 ]
 
 # Languatool settings. If LT_PORT isn't a valid port number, the languagetool

@@ -90,7 +90,7 @@ parts:
       git apply $SNAPCRAFT_STAGE/fiduswriter-set-defaults.patch
       snapcraftctl set-version "$(cat fiduswriter/version.txt)"
     python-packages:
-      - $SNAPCRAFT_PART_SRC[books,citation-api-import,languagetool,ojs,phplist,gitrepo-export,payment-paddle]
+      - $SNAPCRAFT_PART_SRC[books,citation-api-import,languagetool,ojs,phplist,gitrepo-export,payment-paddle,website]
       - django-otp
       - qrcode
       - wheel
