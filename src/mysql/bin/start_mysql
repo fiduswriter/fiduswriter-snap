@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 # shellcheck source=src/mysql/utilities/mysql-utilities
 . "$SNAP/utilities/mysql-utilities"
@@ -8,9 +8,13 @@ chmod 750 "${SNAP_DATA}/logs"
 
 new_install=false
 
+if ! mysql_is_initialized; then
+	rm -rf "$SNAP_DATA/mysql"
+fi
+
 # Make sure the database is initialized (this is safe to run if already
 # initialized)
-if mysqld --initialize-insecure --basedir="$SNAP" --datadir="$SNAP_DATA/mysql" --lc-messages-dir="$SNAP/share"; then
+if mysqld --defaults-file="$SNAP/my.cnf" --initialize-insecure --basedir="$SNAP" --datadir="$SNAP_DATA/mysql" --lc-messages-dir="$SNAP/share" > /dev/null 2>&1; then
 	new_install=true
 fi
 
@@ -39,6 +43,9 @@ if [ $new_install = true ]; then
 	EOF
 	chmod 600 "$MYSQL_ROOT_OPTION_FILE"
 
+	# Make sure we wait until MySQL is actually up before continuing
+	wait_for_mysql -f
+
 	# Now set everything up in one step:
 	# 1) Set the root user's password
 	# 2) Create the fiduswriter user
@@ -56,11 +63,11 @@ if [ $new_install = true ]; then
 		echo "password=$root_password" >> "$MYSQL_ROOT_OPTION_FILE"
 		printf "done\n"
 	else
-		echo "Failed to initialize-- reverting..."
+		echo "Failed to initialize-- undoing setup and will try again..."
 		"$SNAP/support-files/mysql.server" stop
-		rm -rf "$SNAP_DATA"/mysql/*
+		rm -rf "$SNAP_DATA/mysql"
+		exit 1
 	fi
-
 else
 	# Okay, this isn't a new installation. However, we recently changed
 	# the location of MySQL's socket (11.0.2snap1). Make sure the root

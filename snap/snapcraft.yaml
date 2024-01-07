@@ -1,382 +1,382 @@
 name: fiduswriter
 adopt-info: fiduswriter
-summary: 'An academic collaborative word processor'
-description: 'Fidus Writer is an online collaborative editor especially made for academics who need to use citations and/or formulas. The editor focuses on the content rather than the layout, so that with the same text, you can later on publish it in multiple ways: On a website, as a printed book, or as an ebook. In each case, you can choose from a number of layouts that are adequate for the medium of choice.'
+summary: "An academic collaborative word processor"
+description: "Fidus Writer is an online collaborative editor especially made for academics who need to use citations and/or formulas. The editor focuses on the content rather than the layout, so that with the same text, you can later on publish it in multiple ways: On a website, as a printed book, or as an ebook. In each case, you can choose from a number of layouts that are adequate for the medium of choice."
 base: core20
 architectures:
-  - build-on: amd64
-  - build-on: arm64
-  - build-on: armhf
-  - build-on: ppc64el
-  - build-on: s390x
+    - build-on: amd64
+    - build-on: arm64
+    - build-on: armhf
+    - build-on: ppc64el
+    - build-on: s390x
 confinement: strict
 grade: stable
 epoch: 7*
 parts:
-  python:
-    plugin: autotools
-    source: https://www.python.org/ftp/python/3.11.0/Python-3.11.0.tgz
-    autotools-configure-parameters:
-      - --enable-optimizations
-      - --prefix=/usr
-    build-packages:
-      - build-essential
-      - gdb
-      - lcov
-      - pkg-config
-      - libbz2-dev
-      - libffi-dev
-      - libgdbm-dev
-      - libgdbm-compat-dev
-      - liblzma-dev
-      - libncurses5-dev
-      - libreadline6-dev
-      - libsqlite3-dev
-      - libssl-dev
-      - lzma
-      - lzma-dev
-      - tk-dev
-      - uuid-dev
-      - zlib1g-dev
-    stage-packages:
-      - libfontconfig1
-      - libfreetype6
-      - libgdbm-compat4
-      - libgdbm6
-      - libpng16-16
-      - libtcl8.6
-      - libtk8.6
-      - libx11-6
-      - libxau6
-      - libxcb1
-      - libxdmcp6
-      - libxext6
-      - libxft2
-      - libxrender1
-      - libxss1
-    prime:
-      - -etc
-      - -lib/systemd
-      - -usr/bin/2to3
-      - -usr/bin/2to3-3.11
-      - -usr/bin/deb-systemd-helper
-      - -usr/bin/deb-systemd-invoke
-      - -usr/bin/easy_install-3.11
-      - -usr/bin/idle3
-      - -usr/bin/idle3.11
-      - -usr/bin/pydoc3
-      - -usr/bin/pydoc3.11
-      - -usr/bin/python3.11-config
-      - -usr/bin/python3-config
-      - -usr/bin/uuidgen
-      - -usr/include
-      - -usr/lib/*.a
-      - -usr/lib/pkgconfig
-      - -usr/lib/python3.11/test
-      - -usr/sbin
-      - -usr/share
-      - -var
-  fiduswriter:
-    plugin: python
-    source: https://github.com/fiduswriter/fiduswriter.git
-    source-branch: main
-    after: [python, fiduswriter-patches, mysql]
-    override-build: | # Removing here rather than in stage below due to snapcraft issue https://forum.snapcraft.io/t/conflicting-files-sometimes/19818/2
-      export CRYPTOGRAPHY_DONT_BUILD_RUST=1
-      snapcraftctl build
-      rm $SNAPCRAFT_PART_INSTALL/lib/python3.11/site-packages/fiduswriter/configuration.py-default
-    override-pull: |
-      snapcraftctl pull
-      git apply $SNAPCRAFT_STAGE/fiduswriter-set-defaults.patch
-      snapcraftctl set-version "$(cat fiduswriter/version.txt)"
-    python-packages:
-      - $SNAPCRAFT_PART_SRC[books,citation-api-import,languagetool,ojs,phplist,gitrepo-export,payment-paddle,website]
-      - django-otp
-      - qrcode
-      - wheel
-      - pip
-      - cryptography
-      - setuptools
-    requirements:
-      - fiduswriter/requirements.txt
-      - fiduswriter/mysql-requirements.txt
-    build-packages:
-      - libjpeg-dev
-      - gettext
-      - libffi-dev
-      - rustc
-      - cargo
-      - libxslt-dev
-      - libxml2-dev
-    stage-packages:
-      - libjpeg-dev
-      - gettext
-      - zlib1g-dev
-      - wget
-      - build-essential
-      - libmagic1
-      - nano
-    build-environment:
-      - SNAPCRAFT_PYTHON_INTERPRETER: python3.11
-      - C_INCLUDE_PATH: $SNAPCRAFT_STAGE/usr/include/python3.11/
-    stage:
-      - -bin/python
-      - -bin/python3
-      - -bin/python3.11
-    # stage:
-    #   # Remove scripts that we'll be replacing with our own
-    #   - -lib/python3.11/site-packages/fiduswriter/configuration.py-default
+    python:
+        plugin: autotools
+        source: https://www.python.org/ftp/python/3.11.0/Python-3.11.0.tgz
+        autotools-configure-parameters:
+            - --enable-optimizations
+            - --prefix=/usr
+        build-packages:
+            - build-essential
+            - gdb
+            - lcov
+            - pkg-config
+            - libbz2-dev
+            - libffi-dev
+            - libgdbm-dev
+            - libgdbm-compat-dev
+            - liblzma-dev
+            - libncurses5-dev
+            - libreadline6-dev
+            - libsqlite3-dev
+            - libssl-dev
+            - lzma
+            - lzma-dev
+            - tk-dev
+            - uuid-dev
+            - zlib1g-dev
+        stage-packages:
+            - libfontconfig1
+            - libfreetype6
+            - libgdbm-compat4
+            - libgdbm6
+            - libpng16-16
+            - libtcl8.6
+            - libtk8.6
+            - libx11-6
+            - libxau6
+            - libxcb1
+            - libxdmcp6
+            - libxext6
+            - libxft2
+            - libxrender1
+            - libxss1
+        prime:
+            - -etc
+            - -lib/systemd
+            - -usr/bin/2to3
+            - -usr/bin/2to3-3.11
+            - -usr/bin/deb-systemd-helper
+            - -usr/bin/deb-systemd-invoke
+            - -usr/bin/easy_install-3.11
+            - -usr/bin/idle3
+            - -usr/bin/idle3.11
+            - -usr/bin/pydoc3
+            - -usr/bin/pydoc3.11
+            - -usr/bin/python3.11-config
+            - -usr/bin/python3-config
+            - -usr/bin/uuidgen
+            - -usr/include
+            - -usr/lib/*.a
+            - -usr/lib/pkgconfig
+            - -usr/lib/python3.11/test
+            - -usr/sbin
+            - -usr/share
+            - -var
+    fiduswriter:
+        plugin: python
+        source: https://github.com/fiduswriter/fiduswriter.git
+        source-branch: main
+        after: [python, fiduswriter-patches, mysql]
+        override-build:
+            | # Removing here rather than in stage below due to snapcraft issue https://forum.snapcraft.io/t/conflicting-files-sometimes/19818/2
+            export CRYPTOGRAPHY_DONT_BUILD_RUST=1
+            snapcraftctl build
+            rm $SNAPCRAFT_PART_INSTALL/lib/python3.11/site-packages/fiduswriter/configuration.py-default
+        override-pull: |
+            snapcraftctl pull
+            git apply $SNAPCRAFT_STAGE/fiduswriter-set-defaults.patch
+            snapcraftctl set-version "$(cat fiduswriter/version.txt)"
+        python-packages:
+            - $SNAPCRAFT_PART_SRC[books,citation-api-import,languagetool,ojs,phplist,gitrepo-export,payment-paddle,website]
+            - django-otp
+            - qrcode
+            - wheel
+            - pip
+            - cryptography
+            - setuptools
+        requirements:
+            - fiduswriter/requirements.txt
+            - fiduswriter/mysql-requirements.txt
+        build-packages:
+            - libjpeg-dev
+            - gettext
+            - libffi-dev
+            - rustc
+            - cargo
+            - libxslt-dev
+            - libxml2-dev
+        stage-packages:
+            - libjpeg-dev
+            - gettext
+            - zlib1g-dev
+            - wget
+            - build-essential
+            - libmagic1
+            - nano
+        build-environment:
+            - SNAPCRAFT_PYTHON_INTERPRETER: python3.11
+            - C_INCLUDE_PATH: $SNAPCRAFT_STAGE/usr/include/python3.11/
+        stage:
+            - -bin/python
+            - -bin/python3
+            - -bin/python3.11
+        # stage:
+        #   # Remove scripts that we'll be replacing with our own
+        #   - -lib/python3.11/site-packages/fiduswriter/configuration.py-default
 
-  fiduswriter-customizations:
-    plugin: dump
-    source: src/fiduswriter/
-    after: [fiduswriter]
-    organize:
-      configuration.py: lib/python3.11/site-packages/fiduswriter/configuration.py-default
+    fiduswriter-customizations:
+        plugin: dump
+        source: src/fiduswriter/
+        after: [fiduswriter]
+        organize:
+            configuration.py: lib/python3.11/site-packages/fiduswriter/configuration.py-default
 
-  languagetool:
-    plugin: nil
+    languagetool:
+        plugin: nil
+        override-build: |
+            wget -O $SNAPCRAFT_PART_BUILD/LanguageTool-5.9.zip https://languagetool.org/download/LanguageTool-5.9.zip
+            unzip $SNAPCRAFT_PART_BUILD/LanguageTool-5.9.zip
+            mv $SNAPCRAFT_PART_BUILD/LanguageTool-5.9 $SNAPCRAFT_PART_INSTALL/lt
+            rm $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/lib/security/cacerts
+            rm $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/lib/security/blacklisted.certs
+        # mv $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk-* $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk
+        build-packages:
+            - wget
+            - unzip
+        stage-packages:
+            - openjdk-11-jre
+            - ca-certificates
+            - ca-certificates-java
+        # stage:
+        #  - -usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/lib/security/cacerts
+
+    languagetool-script:
+        plugin: dump
+        source: src/languagetool/
+
+    npm:
+        plugin: npm
+        npm-node-version: 18.12.0
+        source: src/npm
+        prime:
+            - -package.json
+            - -package-lock.json
+        organize:
+            LICENSE: LICENSE-npm
+
+    boost:
+        plugin: dump
+        source: https://sourceforge.net/projects/boost/files/boost/1.77.0/boost_1_77_0.tar.bz2
+        source-checksum: sha1/0cb4f947d094fc311e13ffacaff00418130ef5ef
+        stage:
+            - boost/
+        prime:
+            - -*
+
+    mysql:
+        plugin: cmake
+        after: [boost]
+
+        # Get from https://dev.mysql.com/downloads/mysql/
+        source: https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-boost-8.0.35.tar.gz
+        source-checksum: md5/9da2fff787551a12307002c1ead747bd
+        configflags:
+            - -DCMAKE_INSTALL_PREFIX=/
+            - -DBUILD_CONFIG=mysql_release
+            - -DCMAKE_BUILD_TYPE=Release
+            - -DWITH_UNIT_TESTS=OFF
+            - -DWITH_EMBEDDED_SERVER=OFF
+            - -DWITH_ARCHIVE_STORAGE_ENGINE=OFF
+            - -DWITH_EXAMPLE_STORAGE_ENGINE=OFF
+            - -DWITH_BLACKHOLE_STORAGE_ENGINE=OFF
+            - -DWITH_FEDERATED_STORAGE_ENGINE=OFF
+            - -DWITH_PARTITION_STORAGE_ENGINE=OFF
+            - -DWITH_PERFSCHEMA_STORAGE_ENGINE=OFF
+            - -DWITH_DEBUG=OFF
+            - -DWITH_INNODB_EXTRA_DEBUG=OFF
+            - -DINSTALL_MYSQLTESTDIR=
+            - -DDOWNLOAD_BOOST=OFF
+            - -DWITH_BOOST=$SNAPCRAFT_STAGE
+
     override-build: |
-      wget -O $SNAPCRAFT_PART_BUILD/LanguageTool-5.9.zip https://languagetool.org/download/LanguageTool-5.9.zip
-      unzip $SNAPCRAFT_PART_BUILD/LanguageTool-5.9.zip
-      mv $SNAPCRAFT_PART_BUILD/LanguageTool-5.9 $SNAPCRAFT_PART_INSTALL/lt
-      rm $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/lib/security/cacerts
-      rm $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/lib/security/blacklisted.certs
-    # mv $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk-* $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk
-    build-packages:
-      - wget
-      - unzip
-    stage-packages:
-      - openjdk-11-jre
-      - ca-certificates
-      - ca-certificates-java
-    # stage:
-    #  - -usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/lib/security/cacerts
-
-  languagetool-script:
-    plugin: dump
-    source: src/languagetool/
-
-  npm:
-    plugin: npm
-    npm-node-version: 18.12.0
-    source: src/npm
-    prime:
-      - -package.json
-      - -package-lock.json
-    organize:
-      LICENSE: LICENSE-npm
-
-  boost:
-    plugin: dump
-    source: https://sourceforge.net/projects/boost/files/boost/1.77.0/boost_1_77_0.tar.bz2
-    source-checksum: sha1/0cb4f947d094fc311e13ffacaff00418130ef5ef
-    stage:
-      - boost/
-    prime:
-      - -*
-
-  mysql:
-    plugin: cmake
-    after: [boost]
-
-    # Get from https://dev.mysql.com/downloads/mysql/
-    source: https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-boost-8.0.35.tar.gz
-    source-checksum: md5/9da2fff787551a12307002c1ead747bd
-    cmake-parameters:
-      - -DCMAKE_INSTALL_PREFIX=/
-      - -DBUILD_CONFIG=mysql_release
-      - -DCMAKE_BUILD_TYPE=Release
-      - -DWITH_UNIT_TESTS=OFF
-      - -DWITH_EMBEDDED_SERVER=OFF
-      - -DWITH_ARCHIVE_STORAGE_ENGINE=OFF
-      - -DWITH_EXAMPLE_STORAGE_ENGINE=OFF
-      - -DWITH_BLACKHOLE_STORAGE_ENGINE=OFF
-      - -DWITH_FEDERATED_STORAGE_ENGINE=OFF
-      - -DWITH_PARTITION_STORAGE_ENGINE=OFF
-      - -DWITH_PERFSCHEMA_STORAGE_ENGINE=OFF
-      - -DWITH_DEBUG=OFF
-      - -DWITH_INNODB_EXTRA_DEBUG=OFF
-      - -DINSTALL_MYSQLTESTDIR=
-      - -DDOWNLOAD_BOOST=OFF
-      - -DWITH_BOOST=$SNAPCRAFT_STAGE
-
-    override-build: |
-      snapcraftctl build
-      # MySQL v8 is massive. Strip it.
-      find "$SNAPCRAFT_PART_INSTALL/bin" -type f -exec sh -c 'grep -IL . "$1" || strip --strip-all "$1"' sh "{}" \;
+        snapcraftctl build
+        # MySQL v8 is massive. Strip it.
+        find "$SNAPCRAFT_PART_INSTALL/bin" -type f -exec sh -c 'grep -IL . "$1" || strip --strip-all "$1"' sh "{}" \;
 
     build-packages:
-      - libncurses5-dev
-      - binutils
-      - gcc-8
-      - g++-8
-      - libssl-dev
-      - pkg-config
+        - libncurses5-dev
+        - binutils
+        - gcc-8
+        - g++-8
 
     stage:
-      # Remove scripts that we'll be replacing with our own
-      - -support-files/mysql.server
-      - -COPYING
+        # Remove scripts that we'll be replacing with our own
+        - -support-files/mysql.server
+        - -COPYING
 
-      # Remove unused binaries that waste space
-      - -bin/comp_err
-      - -bin/ibd2sdi
-      - -bin/innochecksum
-      - -bin/lz4_decompress
-      - -bin/myisam_ftdump
-      - -bin/myisam*
-      - -bin/mysql_client_test
-      - -bin/mysql_secure_installation
-      - -bin/mysql_ssl_rsa_setup
-      - -bin/mysql_tzinfo_to_sql
-      - -bin/mysql_upgrade
-      - -bin/mysqladmin
-      - -bin/mysqlbinlog
-      - -bin/mysqlcheck
-      - -bin/mysqld_multi
-      - -bin/mysqlimport
-      - -bin/mysqlpump
-      - -bin/mysqlrouter*
-      - -bin/mysqlshow
-      - -bin/mysqlslap
-      - -bin/mysqltest*
-      - -bin/perror
-      - -bin/zlib_decompress
+        # Remove unused binaries that waste space
+        - -bin/comp_err
+        - -bin/ibd2sdi
+        - -bin/innochecksum
+        - -bin/lz4_decompress
+        - -bin/myisam_ftdump
+        - -bin/myisam*
+        - -bin/mysql_client_test
+        - -bin/mysql_config*
+        - -bin/mysql_secure_installation
+        - -bin/mysql_ssl_rsa_setup
+        - -bin/mysql_tzinfo_to_sql
+        - -bin/mysql_upgrade
+        - -bin/mysqladmin
+        - -bin/mysqlbinlog
+        - -bin/mysqlcheck
+        - -bin/mysqld_multi
+        - -bin/mysqlimport
+        - -bin/mysqlpump
+        - -bin/mysqlrouter*
+        - -bin/mysqlshow
+        - -bin/mysqlslap
+        - -bin/mysqltest*
+        - -bin/perror
+        - -bin/zlib_decompress
 
-  # Copy over our MySQL scripts
-  mysql-customizations:
-    plugin: dump
-    source: src/mysql/
+    # Copy over our MySQL scripts
+    mysql-customizations:
+        plugin: dump
+        source: src/mysql/
 
-  mysql-patches:
-    source: src/mysql-patches
-    plugin: dump
-    prime:
-      - -*
+    mysql-patches:
+        source: src/mysql-patches
+        plugin: dump
+        prime:
+            - -*
 
-  fiduswriter-patches:
-    source: src/fiduswriter-patches
-    plugin: dump
-    prime:
-      - -*
+    fiduswriter-patches:
+        source: src/fiduswriter-patches
+        plugin: dump
+        prime:
+            - -*
 
-  common:
-    plugin: dump
-    source: src/common/
+    common:
+        plugin: dump
+        source: src/common/
 
-  logrotate:
-    plugin: dump
-    source: src/logrotate/
-    organize:
-      config/*: config/logrotate/
-      usr/sbin/*: bin/
-    stage-packages: [logrotate]
-    stage:
-      - bin/*
-      - config/*
-      - utilities/*
-    after: [envsubst]
+    logrotate:
+        plugin: dump
+        source: src/logrotate/
+        organize:
+            config/*: config/logrotate/
+            usr/sbin/*: bin/
+        stage-packages: [logrotate]
+        stage:
+            - bin/*
+            - config/*
+            - utilities/*
+        after: [envsubst]
 
-  migrations:
-    plugin: dump
-    source: src/migrations/
+    migrations:
+        plugin: dump
+        source: src/migrations/
 
-  envsubst:
-    plugin: nil
-    stage-packages: [gettext-base]
-    stage: [usr/bin/envsubst]
+    envsubst:
+        plugin: nil
+        stage-packages: [gettext-base]
+        stage: [usr/bin/envsubst]
 
-  hooks:
-    plugin: dump
-    source: src/hooks/
-    organize:
-      bin/: snap/hooks/
+    hooks:
+        plugin: dump
+        source: src/hooks/
+        organize:
+            bin/: snap/hooks/
 
 hooks:
-  configure:
-    plugs:
-      - network-bind
-      - network-control
-      - network-observe
+    configure:
+        plugs:
+            - network-bind
+            - network-control
+            - network-observe
 
 apps:
-  daemon:
-    command: 'bin/run-fiduswriter.py'
-    daemon: simple
-    plugs:
-      - network-bind
-      - network-control
-      - network-observe
-    environment:
-      PYTHONPATH: $SNAP/lib/python3.11/site-packages
+    daemon:
+        command: "bin/run-fiduswriter.py"
+        daemon: simple
+        plugs:
+            - network-bind
+            - network-control
+            - network-observe
+        environment:
+            PYTHONPATH: $SNAP/lib/python3.11/site-packages
 
-  manage:
-    command: 'bin/manage.py'
-    plugs:
-      - network-bind
-      - network-control
-      - network-observe
-    adapter: full
-    environment:
-      PYTHONPATH: $SNAP/lib/python3.11/site-packages
+    manage:
+        command: "bin/manage.py"
+        plugs:
+            - network-bind
+            - network-control
+            - network-observe
+        adapter: full
+        environment:
+            PYTHONPATH: $SNAP/lib/python3.11/site-packages
 
-  createsuperuser:
-    command: 'bin/manage.py createsuperuser'
-    environment:
-      PYTHONPATH: $SNAP/lib/python3.11/site-packages
+    createsuperuser:
+        command: "bin/manage.py createsuperuser"
+        environment:
+            PYTHONPATH: $SNAP/lib/python3.11/site-packages
 
-  configure:
-    command: 'bin/configure.py'
-    plugs:
-      - network-bind
-      - network-control
-      - network-observe
-    adapter: full
-    environment:
-      PYTHONPATH: $SNAP/lib/python3.11/site-packages
+    configure:
+        command: "bin/configure.py"
+        plugs:
+            - network-bind
+            - network-control
+            - network-observe
+        adapter: full
+        environment:
+            PYTHONPATH: $SNAP/lib/python3.11/site-packages
 
-  # MySQL daemon
-  mysql:
-    command: bin/start_mysql
-    stop-command: support-files/mysql.server stop
-    reload-command: bin/reload-mysql
-    daemon: simple
-    restart-condition: always
-    plugs: [network, network-bind]
+    # MySQL daemon
+    mysql:
+        command: bin/start_mysql
+        stop-command: support-files/mysql.server stop
+        reload-command: bin/reload-mysql
+        daemon: simple
+        restart-condition: always
+        plugs: [network, network-bind]
 
-  # MySQL client
-  mysql-client:
-    command: bin/run-mysql
-    plugs: [network, network-bind]
+    # MySQL client
+    mysql-client:
+        command: bin/run-mysql
+        plugs: [network, network-bind]
 
-  logrotate:
-    command: bin/run-logrotate
-    daemon: simple
-    restart-condition: on-failure
-    timer: 00:00 # Run once a day at midnight
+    mysqldump:
+        command: bin/run-mysqldump
+        plugs: [network, network-bind]
 
-  mysqldump:
-    command: bin/run-mysqldump
-    plugs: [network, network-bind]
+    logrotate:
+        command: bin/run-logrotate
+        daemon: simple
+        restart-condition: on-failure
+        timer: 00:00 # Run once a day at midnight
 
-  languagetool:
-    command: bin/run-languagetool.py
-    environment:
-      JAVA_HOME: $SNAP/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH
-      JAVA_BIN: $SNAP/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/bin/java
-      PATH: $JAVA_HOME/bin:$PATH
-      PYTHONPATH: $SNAP/lib/python3.11/site-packages
-    daemon: simple
-    restart-condition: always
-    plugs: [network-bind]
+    languagetool:
+        command: bin/run-languagetool.py
+        environment:
+            JAVA_HOME: $SNAP/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH
+            JAVA_BIN: $SNAP/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/bin/java
+            PATH: $JAVA_HOME/bin:$PATH
+            PYTHONPATH: $SNAP/lib/python3.11/site-packages
+        daemon: simple
+        restart-condition: always
+        plugs: [network-bind]
 
 layout:
-  /etc/magic:
-    bind-file: $SNAP/etc/magic
-  /etc/wgetrc:
-    bind-file: $SNAP/etc/wgetrc
-  /etc/nanorc:
-    bind-file: $SNAP/etc/nanorc
-  /usr/share/nano:
-    bind: $SNAP/usr/share/nano
+    /etc/magic:
+        bind-file: $SNAP/etc/magic
+    /etc/wgetrc:
+        bind-file: $SNAP/etc/wgetrc
+    /etc/nanorc:
+        bind-file: $SNAP/etc/nanorc
+    /usr/share/nano:
+        bind: $SNAP/usr/share/nano
