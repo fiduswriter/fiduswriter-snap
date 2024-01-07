@@ -106,6 +106,8 @@ parts:
       - libffi-dev
       - rustc
       - cargo
+      - libxslt-dev
+      - libxml2-dev
     stage-packages:
       - libjpeg-dev
       - gettext
