@@ -201,49 +201,48 @@ parts:
             - -DINSTALL_MYSQLTESTDIR=
             - -DDOWNLOAD_BOOST=OFF
             - -DWITH_BOOST=$SNAPCRAFT_STAGE
-    # MySQL v8 is massive. Strip it.
-    override-build: |
-        snapcraftctl build
-        find "$SNAPCRAFT_PART_INSTALL/bin" -type f -exec sh -c 'grep -IL . "$1" || strip --strip-all "$1"' sh "{}" \;
+        override-build: |
+            snapcraftctl build
+            # MySQL v8 is massive. Strip it.
+            find "$SNAPCRAFT_PART_INSTALL/bin" -type f -exec sh -c 'grep -IL . "$1" || strip --strip-all "$1"' sh "{}" \;
+        build-packages:
+            - libncurses5-dev
+            - binutils
+            - gcc-8
+            - g++-8
+            - libssl-dev
+            - pkg-config
 
-    build-packages:
-        - libncurses5-dev
-        - binutils
-        - gcc-8
-        - g++-8
-        - libssl-dev
-        - pkg-config
+        stage:
+            # Remove scripts that we'll be replacing with our own
+            - -support-files/mysql.server
+            - -COPYING
 
-    stage:
-        # Remove scripts that we'll be replacing with our own
-        - -support-files/mysql.server
-        - -COPYING
-
-        # Remove unused binaries that waste space
-        - -bin/comp_err
-        - -bin/ibd2sdi
-        - -bin/innochecksum
-        - -bin/lz4_decompress
-        - -bin/myisam_ftdump
-        - -bin/myisam*
-        - -bin/mysql_client_test
-        - -bin/mysql_config*
-        - -bin/mysql_secure_installation
-        - -bin/mysql_ssl_rsa_setup
-        - -bin/mysql_tzinfo_to_sql
-        - -bin/mysql_upgrade
-        - -bin/mysqladmin
-        - -bin/mysqlbinlog
-        - -bin/mysqlcheck
-        - -bin/mysqld_multi
-        - -bin/mysqlimport
-        - -bin/mysqlpump
-        - -bin/mysqlrouter*
-        - -bin/mysqlshow
-        - -bin/mysqlslap
-        - -bin/mysqltest*
-        - -bin/perror
-        - -bin/zlib_decompress
+            # Remove unused binaries that waste space
+            - -bin/comp_err
+            - -bin/ibd2sdi
+            - -bin/innochecksum
+            - -bin/lz4_decompress
+            - -bin/myisam_ftdump
+            - -bin/myisam*
+            - -bin/mysql_client_test
+            - -bin/mysql_config*
+            - -bin/mysql_secure_installation
+            - -bin/mysql_ssl_rsa_setup
+            - -bin/mysql_tzinfo_to_sql
+            - -bin/mysql_upgrade
+            - -bin/mysqladmin
+            - -bin/mysqlbinlog
+            - -bin/mysqlcheck
+            - -bin/mysqld_multi
+            - -bin/mysqlimport
+            - -bin/mysqlpump
+            - -bin/mysqlrouter*
+            - -bin/mysqlshow
+            - -bin/mysqlslap
+            - -bin/mysqltest*
+            - -bin/perror
+            - -bin/zlib_decompress
 
     # Copy over our MySQL scripts
     mysql-customizations:
