@@ -201,10 +201,9 @@ parts:
             - -DINSTALL_MYSQLTESTDIR=
             - -DDOWNLOAD_BOOST=OFF
             - -DWITH_BOOST=$SNAPCRAFT_STAGE
-
+    # MySQL v8 is massive. Strip it.
     override-build: |
         snapcraftctl build
-        # MySQL v8 is massive. Strip it.
         find "$SNAPCRAFT_PART_INSTALL/bin" -type f -exec sh -c 'grep -IL . "$1" || strip --strip-all "$1"' sh "{}" \;
 
     build-packages:
