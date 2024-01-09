@@ -81,8 +81,8 @@ parts:
         source: https://github.com/fiduswriter/fiduswriter.git
         source-branch: main
         after: [python, fiduswriter-patches, mysql]
-        override-build:
-            | # Removing here rather than in stage below due to snapcraft issue https://forum.snapcraft.io/t/conflicting-files-sometimes/19818/2
+        # Removing here rather than in stage below due to snapcraft issue https://forum.snapcraft.io/t/conflicting-files-sometimes/19818/2
+        override-build: |
             export CRYPTOGRAPHY_DONT_BUILD_RUST=1
             snapcraftctl build
             rm $SNAPCRAFT_PART_INSTALL/lib/python3.11/site-packages/fiduswriter/configuration.py-default
