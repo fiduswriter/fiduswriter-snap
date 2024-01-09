@@ -226,7 +226,6 @@ parts:
             - -bin/myisam_ftdump
             - -bin/myisam*
             - -bin/mysql_client_test
-            - -bin/mysql_config*
             - -bin/mysql_secure_installation
             - -bin/mysql_ssl_rsa_setup
             - -bin/mysql_tzinfo_to_sql
