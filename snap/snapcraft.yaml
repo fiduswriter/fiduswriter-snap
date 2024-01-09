@@ -184,7 +184,7 @@ parts:
         # Get from https://dev.mysql.com/downloads/mysql/
         source: https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-boost-8.0.35.tar.gz
         source-checksum: md5/9da2fff787551a12307002c1ead747bd
-        configflags:
+        cmake-parameters:
             - -DCMAKE_INSTALL_PREFIX=/
             - -DBUILD_CONFIG=mysql_release
             - -DCMAKE_BUILD_TYPE=Release
@@ -212,6 +212,8 @@ parts:
         - binutils
         - gcc-8
         - g++-8
+        - libssl-dev
+        - pkg-config
 
     stage:
         # Remove scripts that we'll be replacing with our own
