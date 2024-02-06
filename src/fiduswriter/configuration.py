@@ -46,6 +46,8 @@ ACCOUNT_EMAIL_VERIFICATION = "optional"
 #    'localhost',
 # ]
 
+# CSRF_TRUSTED_ORIGINS = []
+
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 # STATIC_URL = '/static/'
@@ -118,3 +120,32 @@ LT_URL = "http://localhost:" + str(LT_PORT)
 # PHPLIST_SECRET (optional) # If you have set an obligatory secret within
 # the PHPList REST API, set it here as well.
 # PHPLIST_LIST_ID # The email list id found in step 2.
+
+# FOOTER_LINKS = [
+#     {
+#         "text": "Terms and Conditions",
+#         "link": "/pages/terms/"
+#     },
+#     {
+#         "text": "Privacy policy",
+#         "link": "/pages/privacy/"
+#     },
+#     {
+#         "text": "Equations and Math with MathLive",
+#         "link": "https://github.com/arnog/mathlive#readme",
+#         "external": True
+#     },
+#     {
+#         "text": "Citations with Citation Style Language",
+#         "link": "https://citationstyles.org/",
+#         "external": True
+#     },
+#     {
+#         "text": "Editing with ProseMirror",
+#         "link": "https://prosemirror.net/",
+#         "external": True
+#     }
+# ]
+
+# Add branding logo inside of "static-libs" folder. For example: static-libs/svg/logo.svg
+# BRANDING_LOGO = "svg/logo.svg"

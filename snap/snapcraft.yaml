@@ -85,7 +85,7 @@ parts:
         override-build: |
             export CRYPTOGRAPHY_DONT_BUILD_RUST=1
             snapcraftctl build
-            rm $SNAPCRAFT_PART_INSTALL/lib/python3.11/site-packages/fiduswriter/configuration.py-default
+            rm $SNAPCRAFT_PART_INSTALL/lib/python3.11/site-packages/fiduswriter/configuration-default.py
         override-pull: |
             snapcraftctl pull
             git apply $SNAPCRAFT_STAGE/fiduswriter-set-defaults.patch
@@ -126,14 +126,14 @@ parts:
             - -bin/python3.11
         # stage:
         #   # Remove scripts that we'll be replacing with our own
-        #   - -lib/python3.11/site-packages/fiduswriter/configuration.py-default
+        #   - -lib/python3.11/site-packages/fiduswriter/configuration-default.py
 
     fiduswriter-customizations:
         plugin: dump
         source: src/fiduswriter/
         after: [fiduswriter]
         organize:
-            configuration.py: lib/python3.11/site-packages/fiduswriter/configuration.py-default
+            configuration.py: lib/python3.11/site-packages/fiduswriter/configuration-default.py
 
     languagetool:
         plugin: nil
