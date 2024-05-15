@@ -117,6 +117,7 @@ parts:
             - build-essential
             - libmagic1
             - nano
+            - libxslt1.1
         build-environment:
             - SNAPCRAFT_PYTHON_INTERPRETER: python3.11
             - C_INCLUDE_PATH: $SNAPCRAFT_STAGE/usr/include/python3.11/
