@@ -138,9 +138,9 @@ parts:
     languagetool:
         plugin: nil
         override-build: |
-            wget -O $SNAPCRAFT_PART_BUILD/LanguageTool-5.9.zip https://languagetool.org/download/LanguageTool-5.9.zip
-            unzip $SNAPCRAFT_PART_BUILD/LanguageTool-5.9.zip
-            mv $SNAPCRAFT_PART_BUILD/LanguageTool-5.9 $SNAPCRAFT_PART_INSTALL/lt
+            wget -O $SNAPCRAFT_PART_BUILD/LanguageTool-6.4.zip https://languagetool.org/download/LanguageTool-6.4.zip
+            unzip $SNAPCRAFT_PART_BUILD/LanguageTool-6.4.zip
+            mv $SNAPCRAFT_PART_BUILD/LanguageTool-6.4 $SNAPCRAFT_PART_INSTALL/lt
             rm $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/lib/security/cacerts
             rm $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/lib/security/blacklisted.certs
         # mv $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk-* $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk
@@ -230,9 +230,8 @@ parts:
             - -bin/mysql_ssl_rsa_setup
             - -bin/mysql_tzinfo_to_sql
             - -bin/mysql_upgrade
-            - -bin/mysqladmin
+
             - -bin/mysqlbinlog
-            - -bin/mysqlcheck
             - -bin/mysqld_multi
             - -bin/mysqlimport
             - -bin/mysqlpump
@@ -351,6 +350,14 @@ apps:
 
     mysqldump:
         command: bin/run-mysqldump
+        plugs: [network, network-bind]
+
+    mysqladmin:
+        command: bin/run-mysqladmin
+        plugs: [network, network-bind]
+
+    mysqlcheck:
+        command: bin/run-mysqlcheck
         plugs: [network, network-bind]
 
     logrotate:
