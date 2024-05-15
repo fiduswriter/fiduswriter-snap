@@ -361,6 +361,12 @@ apps:
         command: bin/run-mysqlcheck
         plugs: [network, network-bind]
 
+    mysqlcheck-scheduled:
+        command: bin/run-mysqlcheck --defaults
+        daemon: simple
+        timer: sun1,3:00 # Run on the first Sunday of the month at 3am
+        plugs: [network, network-bind]
+
     logrotate:
         command: bin/run-logrotate
         daemon: simple
