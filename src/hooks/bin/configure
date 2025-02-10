@@ -34,7 +34,7 @@ if arch in MULTI_ARCH_PATHS:
         ':{}/usr/lib/{}'.format(SNAP, MULTI_ARCH_PATHS[arch])
     )
 os.environ["LD_LIBRARY_PATH"] = LD_LIBRARY_PATH
-os.environ["PYTHONPATH"] = '{}/lib/python3.11/site-packages'.format(SNAP)
+os.environ["PYTHONPATH"] = '{}/lib/python3.13/site-packages'.format(SNAP)
 
 # end fix
 
