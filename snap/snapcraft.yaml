@@ -262,8 +262,7 @@ parts:
 
     pandoc:
         plugin: autotools
-        source: https://github.com/jgm/pandoc/releases/download/3.1.12/pandoc-3.1.12.tar.gz
-        source-checksum: sha256/c035e6ef6b9e6f3f6d2aab0d4b4dc2e7c6d7b3d4a1b4d5c8e1a4c8d7e1a4c8
+        source: https://github.com/jgm/pandoc/archive/refs/tags/3.6.3.zip
         build-packages:
             - ghc
             - cabal-install
