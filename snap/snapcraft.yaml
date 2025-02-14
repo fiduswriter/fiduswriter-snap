@@ -2,16 +2,16 @@ name: fiduswriter
 adopt-info: fiduswriter
 summary: "An academic collaborative word processor"
 description: "Fidus Writer is an online collaborative editor especially made for academics who need to use citations and/or formulas. The editor focuses on the content rather than the layout, so that with the same text, you can later on publish it in multiple ways: On a website, as a printed book, or as an ebook. In each case, you can choose from a number of layouts that are adequate for the medium of choice."
-base: core20
-architectures:
-    - build-on: amd64
-    - build-on: arm64
-    - build-on: armhf
-    - build-on: ppc64el
-    - build-on: s390x
+base: core24
+platforms:
+    amd64:
+    arm64:
+    armhf:
+    ppc64el:
+    s390x:
 confinement: strict
 grade: stable
-epoch: 7*
+epoch: 8*
 parts:
     python:
         plugin: autotools
@@ -84,21 +84,21 @@ parts:
         # Removing here rather than in stage below due to snapcraft issue https://forum.snapcraft.io/t/conflicting-files-sometimes/19818/2
         override-build: |
             export CRYPTOGRAPHY_DONT_BUILD_RUST=1
-            snapcraftctl build
-            rm $SNAPCRAFT_PART_INSTALL/lib/python3.13/site-packages/fiduswriter/configuration-default.py
+            craftctl default
+            rm $CRAFT_PART_INSTALL/lib/python3.13/site-packages/fiduswriter/configuration-default.py
         override-pull: |
-            snapcraftctl pull
-            git apply $SNAPCRAFT_STAGE/fiduswriter-set-defaults.patch
-            snapcraftctl set-version "$(cat fiduswriter/version.txt)"
+            craftctl default
+            git apply $CRAFT_PROJECT_DIR/src/fiduswriter-patches/fiduswriter-set-defaults.patch
+            craftctl set version="$(cat fiduswriter/version.txt)"
         python-packages:
-            - $SNAPCRAFT_PART_SRC[books,citation-api-import,languagetool,ojs,phplist,gitrepo-export,payment-paddle,website,pandoc]
+            - .[books,citation-api-import,languagetool,ojs,phplist,gitrepo-export,payment-paddle,website,pandoc]
             - django-otp
             - qrcode
             - wheel
             - pip
             - cryptography
             - setuptools
-        requirements:
+        python-requirements:
             - fiduswriter/requirements.txt
             - fiduswriter/mysql-requirements.txt
         build-packages:
@@ -120,8 +120,8 @@ parts:
             - nano
             - libxslt1.1
         build-environment:
-            - SNAPCRAFT_PYTHON_INTERPRETER: python3.13
-            - C_INCLUDE_PATH: $SNAPCRAFT_STAGE/usr/include/python3.13/
+            - PARTS_PYTHON_INTERPRETER: python3.13
+            - C_INCLUDE_PATH: $CRAFT_STAGE/usr/include/python3.13/
         stage:
             - -bin/python
             - -bin/python3
@@ -140,21 +140,21 @@ parts:
     languagetool:
         plugin: nil
         override-build: |
-            wget -O $SNAPCRAFT_PART_BUILD/LanguageTool-6.4.zip https://languagetool.org/download/LanguageTool-6.4.zip
-            unzip $SNAPCRAFT_PART_BUILD/LanguageTool-6.4.zip
-            mv $SNAPCRAFT_PART_BUILD/LanguageTool-6.4 $SNAPCRAFT_PART_INSTALL/lt
-            rm $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/lib/security/cacerts
-            rm $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/lib/security/blacklisted.certs
-        # mv $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk-* $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk
+            wget -O $CRAFT_PART_BUILD/LanguageTool-6.4.zip https://languagetool.org/download/LanguageTool-6.4.zip
+            unzip $CRAFT_PART_BUILD/LanguageTool-6.4.zip
+            mv $CRAFT_PART_BUILD/LanguageTool-6.4 $CRAFT_PART_INSTALL/lt
+            rm $CRAFT_PART_INSTALL/usr/lib/jvm/java-17-openjdk-$SNAP_ARCH/lib/security/cacerts
+        #    rm $CRAFT_PART_INSTALL/usr/lib/jvm/java-17-openjdk-$SNAP_ARCH/lib/security/blacklisted.certs
+        # mv $CRAFT_PART_INSTALL/usr/lib/jvm/java-17-openjdk-* $CRAFT_PART_INSTALL/usr/lib/jvm/java-11-openjdk
         build-packages:
             - wget
             - unzip
         stage-packages:
-            - openjdk-11-jre
+            - openjdk-17-jre
             - ca-certificates
             - ca-certificates-java
         # stage:
-        #  - -usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/lib/security/cacerts
+        #  - -usr/lib/jvm/java-17-openjdk-$SNAP_ARCH/lib/security/cacerts
 
     languagetool-script:
         plugin: dump
@@ -162,7 +162,8 @@ parts:
 
     npm:
         plugin: npm
-        npm-node-version: 18.12.0
+        npm-node-version: 20.12.0
+        npm-include-node: true
         source: src/npm
         prime:
             - -package.json
@@ -202,18 +203,19 @@ parts:
             - -DWITH_INNODB_EXTRA_DEBUG=OFF
             - -DINSTALL_MYSQLTESTDIR=
             - -DDOWNLOAD_BOOST=OFF
-            - -DWITH_BOOST=$SNAPCRAFT_STAGE
+            - -DWITH_BOOST=$CRAFT_STAGE
         override-build: |
-            snapcraftctl build
+            craftctl default
             # MySQL v8 is massive. Strip it.
-            find "$SNAPCRAFT_PART_INSTALL/bin" -type f -exec sh -c 'grep -IL . "$1" || strip --strip-all "$1"' sh "{}" \;
+            find "$CRAFT_PART_INSTALL/bin" -type f -exec sh -c 'grep -IL . "$1" || strip --strip-all "$1"' sh "{}" \;
         build-packages:
             - libncurses5-dev
             - binutils
-            - gcc-8
-            - g++-8
+            - gcc
+            - g++
             - libssl-dev
             - pkg-config
+            - libaio-dev
 
         stage:
             # Remove scripts that we'll be replacing with our own
@@ -319,7 +321,6 @@ apps:
             - network-bind
             - network-control
             - network-observe
-        adapter: full
         environment:
             PYTHONPATH: $SNAP/lib/python3.13/site-packages
 
@@ -334,7 +335,6 @@ apps:
             - network-bind
             - network-control
             - network-observe
-        adapter: full
         environment:
             PYTHONPATH: $SNAP/lib/python3.13/site-packages
 
@@ -379,8 +379,8 @@ apps:
     languagetool:
         command: bin/run-languagetool.py
         environment:
-            JAVA_HOME: $SNAP/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH
-            JAVA_BIN: $SNAP/usr/lib/jvm/java-11-openjdk-$SNAP_ARCH/bin/java
+            JAVA_HOME: $SNAP/usr/lib/jvm/java-17-openjdk-$SNAP_ARCH
+            JAVA_BIN: $SNAP/usr/lib/jvm/java-17-openjdk-$SNAP_ARCH/bin/java
             PATH: $JAVA_HOME/bin:$PATH
             PYTHONPATH: $SNAP/lib/python3.13/site-packages
         daemon: simple
