@@ -260,27 +260,6 @@ parts:
         prime:
             - -*
 
-    pandoc:
-        plugin: autotools
-        source: https://github.com/jgm/pandoc/archive/refs/tags/3.6.3.zip
-        build-packages:
-            - ghc
-            - cabal-install
-            - zlib1g-dev
-        build-environment:
-            - ARCH: $SNAPCRAFT_ARCH_TRIPLET
-        override-build: |
-            case "$SNAPCRAFT_ARCH_TRIPLET" in
-                *amd64*) CABAL_OPTS="--enable-executable-static" ;;
-                *arm*) CABAL_OPTS="--disable-shared" ;;
-                *) CABAL_OPTS="" ;;
-            esac
-
-            cabal update
-            cabal install --install-method=copy --installdir="$SNAPCRAFT_PART_INSTALL/bin" \
-                --flags="embed_data_files $CABAL_OPTS"
-        after: [python]
-
     common:
         plugin: dump
         source: src/common/
@@ -406,14 +385,6 @@ apps:
         daemon: simple
         restart-condition: always
         plugs: [network-bind]
-
-    pandoc-service:
-        command: bin/run-pandoc-service.py
-        daemon: simple
-        restart-condition: on-success
-        plugs: [network-bind]
-        environment:
-            PANDOC_DATA_DIR: $SNAP/share/pandoc
 
 layout:
     /etc/magic:
