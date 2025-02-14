@@ -43,7 +43,7 @@ parts:
             - libfreetype6
             - libgdbm-compat4
             - libgdbm6
-            - libpng16-16
+            - libpng16-16t64
             - libtcl8.6
             - libtk8.6
             - libx11-6
