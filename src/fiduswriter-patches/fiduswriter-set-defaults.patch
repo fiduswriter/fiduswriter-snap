@@ -51,6 +51,6 @@ index b0f80df72..0eb291ba8 100755
  # simultaneously
  DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000
 
-+# Pandoc web service ports
++# Websockets service ports
 +WS_URLS = list(range(4386, 4386 + multiprocessing.cpu_count()))
 +

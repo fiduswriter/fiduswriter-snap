@@ -102,6 +102,7 @@ parts:
             - fiduswriter/requirements.txt
             - fiduswriter/mysql-requirements.txt
         build-packages:
+            - libavif-dev
             - libjpeg-dev
             - gettext
             - libffi-dev
