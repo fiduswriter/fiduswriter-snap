@@ -116,7 +116,7 @@ parts:
             - zlib1g-dev
             - wget
             - build-essential
-            - libmagic1
+            - libmagic1t64
             - nano
             - libxslt1.1
             - rsync
