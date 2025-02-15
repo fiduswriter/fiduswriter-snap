@@ -306,7 +306,7 @@ hooks:
 apps:
     daemon:
         command: "bin/run-fiduswriter.py"
-        daemon: forking
+        daemon: simple
         restart-condition: always
         plugs:
             - network-bind
