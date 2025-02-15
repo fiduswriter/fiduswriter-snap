@@ -186,8 +186,8 @@ parts:
         after: [boost]
 
         # Get from https://dev.mysql.com/downloads/mysql/
-        source: https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-boost-8.0.35.tar.gz
-        source-checksum: md5/9da2fff787551a12307002c1ead747bd
+        source: https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-boost-8.0.40.tar.gz
+        source-checksum: md5/8a3ce5a136cebbe7fe5d8e122afffd30
         cmake-parameters:
             - -DCMAKE_INSTALL_PREFIX=/
             - -DBUILD_CONFIG=mysql_release
@@ -252,12 +252,6 @@ parts:
     mysql-customizations:
         plugin: dump
         source: src/mysql/
-
-    mysql-patches:
-        source: src/mysql-patches
-        plugin: dump
-        prime:
-            - -*
 
     fiduswriter-patches:
         source: src/fiduswriter-patches
