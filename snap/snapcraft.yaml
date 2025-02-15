@@ -41,8 +41,8 @@ parts:
         stage-packages:
             - libfontconfig1
             - libfreetype6
-            - libgdbm-compat4
-            - libgdbm6
+            - libgdbm-compat4t64
+            - libgdbm6t64
             - libpng16-16t64
             - libtcl8.6
             - libtk8.6
