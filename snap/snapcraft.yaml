@@ -217,6 +217,7 @@ parts:
             - libssl-dev
             - pkg-config
             - libaio-dev
+            - libtirpc-dev
         stage-packages:
             - libaio1t64
         stage:
