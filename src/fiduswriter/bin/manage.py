@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 import sys
-from subprocess import call, check_output
+from subprocess import call
 
 SNAP = os.environ.get("SNAP")
 SNAP_DATA = os.environ.get("SNAP_DATA")
@@ -11,5 +11,7 @@ if __name__ == "__main__":
         print("This script must be run by root")
         sys.exit()
     call(
-        ["{}/bin/fiduswriter".format(SNAP)] + sys.argv[1:] + ["--pythonpath", SNAP_DATA]
+        ["{}/bin/fiduswriter".format(SNAP)]
+        + sys.argv[1:]
+        + ["--pythonpath", SNAP_DATA]
     )

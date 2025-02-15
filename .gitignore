@@ -7,3 +7,5 @@ prime/
 stage/
 snap/.snapcraft/
 /*.txt
+.envrc
+.direnv/

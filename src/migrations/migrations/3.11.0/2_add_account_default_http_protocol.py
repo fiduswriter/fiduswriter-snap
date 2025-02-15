@@ -2,6 +2,7 @@
 import ipaddress
 import sys
 import os
+import configuration
 
 SNAP_DATA = os.environ.get("SNAP_DATA")
 CONFIGURE_PATH = "{}/configuration.py".format(SNAP_DATA)
@@ -21,18 +22,21 @@ def is_ipaddress(address):
 with open(CONFIGURE_PATH) as f:
     configuration_str = f.read()
 sys.path.append(SNAP_DATA)
-import configuration
+
 
 if "ACCOUNT_DEFAULT_HTTP_PROTOCOL" not in configuration_str:
     configuration_str += "\n"
-    configuration_str += "\n# Enable for social media connectors when using https."
+    configuration_str += (
+        "\n# Enable for social media connectors when using https."
+    )
     uses_domain = False
-    if hasattr(configuration, "ALLOWED_HOSTS") and type(
-        configuration.ALLOWED_HOSTS
-    ) in [list, tuple]:
+    if hasattr(configuration, "ALLOWED_HOSTS") and (
+        type(configuration.ALLOWED_HOSTS) is list
+        or type(configuration.ALLOWED_HOSTS) is tuple
+    ):
         for allowed_host in configuration.ALLOWED_HOSTS:
             if (
-                type(allowed_host) == str
+                type(allowed_host) is str
                 and "localhost" not in allowed_host
                 and not is_ipaddress(allowed_host)
                 and allowed_host != "*"

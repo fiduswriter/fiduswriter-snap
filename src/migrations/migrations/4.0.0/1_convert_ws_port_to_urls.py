@@ -12,29 +12,41 @@ if not os.path.isfile(CONFIGURE_PATH):
 with open(CONFIGURE_PATH, "r") as f:
     content = f.read()
 
+
 # Parse AST to safely find configuration
 class ConfigVisitor(ast.NodeVisitor):
     def __init__(self):
         self.ws_port = None
-        self.ws_urls = False
-        self.installed_apps = None
+        self.port = None
+        self.ports = None
 
     def visit_Assign(self, node):
         if isinstance(node.targets[0], ast.Name):
             if node.targets[0].id == "WS_PORT":
                 self.ws_port = ast.literal_eval(node.value)
-            elif node.targets[0].id == "WS_URLS":
-                self.ws_urls = True
+            if node.targets[0].id == "PORT":
+                self.port = ast.literal_eval(node.value)
+            elif node.targets[0].id == "PORTS":
+                self.ports = True
+
 
 visitor = ConfigVisitor()
 visitor.visit(ast.parse(content))
 
 # Migrate if needed
-if visitor.ws_port and not visitor.ws_urls:
-    new_content = content.replace(
-        "WS_PORT =",
-        f"WS_URLS = [{visitor.ws_port}]  # Migrated from WS_PORT\n# WS_PORT ="
-    )
+if not visitor.ports:
+    if visitor.port:
+        new_content = content.replace(
+            "PORT =",
+            f"PORTS = [{visitor.port}]  # Migrated from PORT\n# PORT =",
+        )
+    elif visitor.ws_port:
+        new_content = content.replace(
+            "WS_PORT =",
+            f"PORTS = [{visitor.ws_port}]  # Migrated from WS_PORT\n# WS_PORT =",
+        )
+    else:
+        new_content = content + "\nPORTS = [4386,]"
 
     with open(CONFIGURE_PATH, "w") as f:
         f.write(new_content)

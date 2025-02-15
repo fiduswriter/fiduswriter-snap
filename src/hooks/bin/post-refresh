@@ -4,20 +4,23 @@ import sys
 import shutil
 import subprocess
 
-SNAP = os.environ.get('SNAP')
-SNAP_DATA = os.environ.get('SNAP_DATA')
-TRANSPILE_DIR = '{}/.transpile'.format(SNAP_DATA)
+SNAP = os.environ.get("SNAP")
+SNAP_DATA = os.environ.get("SNAP_DATA")
+TRANSPILE_DIR = "{}/.transpile".format(SNAP_DATA)
 
 # Delete any old transpile dir if there is one.
 if os.path.isdir(TRANSPILE_DIR):
     shutil.rmtree(TRANSPILE_DIR)
-    while os.path.exists(TRANSPILE_DIR): # Wait until the folder is gone
+    while os.path.exists(TRANSPILE_DIR):  # Wait until the folder is gone
         pass
 
 try:
-    subprocess.check_output([
-        '{}/bin/run-snap-migrations'.format(SNAP),
-    ], stderr=subprocess.STDOUT)
+    subprocess.check_output(
+        [
+            "{}/bin/run-snap-migrations".format(SNAP),
+        ],
+        stderr=subprocess.STDOUT,
+    )
 except subprocess.CalledProcessError as e:
     print(e.output)
     sys.exit(1)

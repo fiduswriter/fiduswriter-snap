@@ -1,12 +1,14 @@
 diff --git a/fiduswriter/base/settings.py b/fiduswriter/base/settings.py
-index b0f80df72..0eb291ba8 100755
+index a9566e6e1..2bae64458 100755
 --- a/fiduswriter/base/settings.py
 +++ b/fiduswriter/base/settings.py
-@@ -1,14 +1,14 @@
- import os
+@@ -2,16 +2,16 @@ import os
 
--PORT = 8000
-+PORT = 4386
+ # The ports Fidus Writer is running on:
+ PORTS = [
+-    8000,
++    4386,
+ ]
 
  # If you want to show debug messages, set DEBUG to True.
 -DEBUG = True
@@ -50,7 +52,3 @@ index b0f80df72..0eb291ba8 100755
  # Will let any user not delete more than 5000 bibliography entries
  # simultaneously
  DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000
-
-+# Websockets service ports
-+WS_URLS = list(range(4386, 4386 + multiprocessing.cpu_count()))
-+

@@ -2,6 +2,7 @@
 import ipaddress
 import sys
 import os
+import configuration
 
 SNAP_DATA = os.environ.get("SNAP_DATA")
 CONFIGURE_PATH = "{}/configuration.py".format(SNAP_DATA)
@@ -21,19 +22,20 @@ def is_ipaddress(address):
 with open(CONFIGURE_PATH) as f:
     configuration_str = f.read()
 sys.path.append(SNAP_DATA)
-import configuration
 
 configuration_str += "\n"
 configuration_str += "\n# Fidus Writer 3.11.0 addition"
 configuration_str += "\nCSRF_TRUSTED_ORIGINS = ["
 
-if hasattr(configuration, "ALLOWED_HOSTS") and type(configuration.ALLOWED_HOSTS) in [
+if hasattr(configuration, "ALLOWED_HOSTS") and type(
+    configuration.ALLOWED_HOSTS
+) in [
     list,
     tuple,
 ]:
     for allowed_host in configuration.ALLOWED_HOSTS:
         if (
-            type(allowed_host) == str
+            type(allowed_host) is str
             and "localhost" not in allowed_host
             and not is_ipaddress(allowed_host)
             and allowed_host != "*"

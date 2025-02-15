@@ -3,48 +3,49 @@ import os
 import sys
 from subprocess import check_output, CalledProcessError
 
-SNAP = os.environ.get('SNAP')
-SNAP_DATA = os.environ.get('SNAP_DATA')
-CONFIGURE_PATH = '{}/configuration.py'.format(SNAP_DATA)
+SNAP = os.environ.get("SNAP")
+SNAP_DATA = os.environ.get("SNAP_DATA")
+CONFIGURE_PATH = "{}/configuration.py".format(SNAP_DATA)
 # Fix: due to https://bugs.launchpad.net/snapcraft/+bug/1824255
 # we need to set the paths here.
 
 MULTI_ARCH_PATHS = {
-    'x86_64': 'x86_64-linux-gnu',
-    'arm': 'arm-linux-gnueabihf',
-    'aarch64': 'aarch64-linux-gnu'
+    "x86_64": "x86_64-linux-gnu",
+    "arm": "arm-linux-gnueabihf",
+    "aarch64": "aarch64-linux-gnu",
 }
 os.environ["PATH"] = (
-    '{}/usr/sbin'.format(SNAP) +
-    ':{}/usr/bin'.format(SNAP) +
-    ':{}/sbin'.format(SNAP) +
-    ':{}/bin'.format(SNAP) +
-    ':{}'.format(os.environ["PATH"])
+    "{}/usr/sbin".format(SNAP)
+    + ":{}/usr/bin".format(SNAP)
+    + ":{}/sbin".format(SNAP)
+    + ":{}/bin".format(SNAP)
+    + ":{}".format(os.environ["PATH"])
 )
 
 LD_LIBRARY_PATH = (
-    '{}'.format(os.environ.get('SNAP_LIBRARY_PATH')) +
-    ':{}/lib'.format(SNAP) +
-    ':{}/usr/lib'.format(SNAP)
+    "{}".format(os.environ.get("SNAP_LIBRARY_PATH"))
+    + ":{}/lib".format(SNAP)
+    + ":{}/usr/lib".format(SNAP)
 )
-arch = check_output(['arch']).strip().decode('utf-8')
+arch = check_output(["arch"]).strip().decode("utf-8")
 if arch in MULTI_ARCH_PATHS:
-    LD_LIBRARY_PATH += (
-        ':{}/lib/{}'.format(SNAP, MULTI_ARCH_PATHS[arch]) +
-        ':{}/usr/lib/{}'.format(SNAP, MULTI_ARCH_PATHS[arch])
-    )
+    LD_LIBRARY_PATH += ":{}/lib/{}".format(
+        SNAP, MULTI_ARCH_PATHS[arch]
+    ) + ":{}/usr/lib/{}".format(SNAP, MULTI_ARCH_PATHS[arch])
 os.environ["LD_LIBRARY_PATH"] = LD_LIBRARY_PATH
-os.environ["PYTHONPATH"] = '{}/lib/python3.13/site-packages'.format(SNAP)
+os.environ["PYTHONPATH"] = "{}/lib/python3.13/site-packages".format(SNAP)
 
 # end fix
 
 if os.path.isfile(CONFIGURE_PATH):
     try:
-        check_output([
-            '{}/bin/fiduswriter'.format(SNAP),
-            'help',
-            '--pythonpath',
-            SNAP_DATA
-        ])
+        check_output(
+            [
+                "{}/bin/fiduswriter".format(SNAP),
+                "help",
+                "--pythonpath",
+                SNAP_DATA,
+            ]
+        )
     except CalledProcessError:
         sys.exit(1)
