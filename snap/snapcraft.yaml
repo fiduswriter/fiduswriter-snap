@@ -201,9 +201,11 @@ parts:
             - -DWITH_PARTITION_STORAGE_ENGINE=OFF
             - -DWITH_PERFSCHEMA_STORAGE_ENGINE=OFF
             - -DWITH_DEBUG=OFF
+            - -DNO_WARN_X86_INTRINSICS
             - -DWITH_INNODB_EXTRA_DEBUG=OFF
             - -DINSTALL_MYSQLTESTDIR=
-            - -DDOWNLOAD_BOOST=OFF
+            - -DDOWNLOAD_BOOST=
+            - -DENABLE_SINGLE_FILES_WERROR=OFF
             - -DWITH_BOOST=$CRAFT_STAGE
         override-build: |
             craftctl default
