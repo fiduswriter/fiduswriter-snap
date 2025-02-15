@@ -3,13 +3,24 @@ import os
 import sys
 import multiprocessing
 import ast
-from subprocess import check_output, CalledProcessError
+import socket
+from subprocess import check_output, CalledProcessError, Popen
 from time import sleep
 
 SNAP = os.environ.get("SNAP")
 SNAP_DATA = os.environ.get("SNAP_DATA")
-CONFIGURE_PATH = "{}/configuration.py".format(SNAP_DATA)
-PASSWORD_PATH = "{}/mysql/fiduswriter_password".format(SNAP_DATA)
+CONFIGURE_PATH = f"{SNAP_DATA}/configuration.py"
+PASSWORD_PATH = f"{SNAP_DATA}/mysql/fiduswriter_password"
+
+def port_check(port):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(1)
+    try:
+        s.connect(('127.0.0.1', port))
+        return False
+    except OSError:
+        return True
+
 
 def get_valid_ports(config):
     """Parse WS_URLS configuration with validation"""
@@ -20,7 +31,15 @@ def get_valid_ports(config):
     if not urls:
         # Default to number of cores
         cores = multiprocessing.cpu_count()
-        return list(range(default_port, default_port + cores))
+        port = default_port
+        while len(ports) < cores:
+            if port_check(port):
+                ports.append(port)
+            port += 1
+        configuration_line = f"\nWS_URLS = {ports}"
+        with open(CONFIGURE_PATH, "a") as config_file:
+            config_file.write(configuration_line)
+        return ports
 
     for entry in urls:
         try:
@@ -50,7 +69,7 @@ if __name__ == "__main__":
         try:
             check_output(
                 [
-                    "{}/bin/fiduswriter".format(SNAP),
+                    f"{SNAP}/bin/fiduswriter",
                     "startproject",
                     "--pythonpath",
                     SNAP_DATA,
@@ -62,7 +81,7 @@ if __name__ == "__main__":
     try:
         check_output(
             [
-                "{}/bin/wait_for_mysql.sh".format(SNAP),
+                f"{SNAP}/bin/wait_for_mysql.sh",
             ]
         )
     except CalledProcessError:
@@ -77,25 +96,32 @@ if __name__ == "__main__":
         # Something went wrong. This should have been caught by setup.
         sys.exit(1)
 
+    sys.path.append(SNAP_DATA)
+
     try:
-        sys.path.append(SNAP_DATA)
-        import configuration
-        ports = get_valid_ports(configuration)
-
-        processes = []
-        for port in ports:
-            proc = subprocess.Popen([
+        check_output(
+            [
                 f"{SNAP}/bin/fiduswriter",
-                "runserver",
-                f"--port={port}",
+                "transpile",
                 "--pythonpath", SNAP_DATA
-            ])
-            processes.append(proc)
+            ]
+        )
+    except CalledProcessError:
+        sys.exit(1)
 
-        # Wait for all processes
-        for proc in processes:
-            proc.wait()
+    import configuration
+    ports = get_valid_ports(configuration)
 
-    except Exception as e:
-            print(f"Error starting services: {str(e)}")
-            sys.exit(1)
+    processes = []
+    for port in ports:
+        proc = Popen([
+            f"{SNAP}/bin/fiduswriter",
+            "runserver",
+            f"{port}",
+            "--pythonpath", SNAP_DATA
+        ])
+        processes.append(proc)
+
+    # Wait for all processes
+    for proc in processes:
+        proc.wait()

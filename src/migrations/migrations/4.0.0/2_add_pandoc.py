@@ -21,20 +21,17 @@ class ConfigVisitor(ast.NodeVisitor):
 
     def visit_Assign(self, node):
         if isinstance(node.targets[0], ast.Name):
-            if node.targets[0].id == "WS_PORT":
-                self.ws_port = ast.literal_eval(node.value)
-            elif node.targets[0].id == "WS_URLS":
-                self.ws_urls = True
+            elif node.targets[0].id == "INSTALLED_APPS":
+                self.installed_apps = ast.literal_eval(node.value)
 
 visitor = ConfigVisitor()
 visitor.visit(ast.parse(content))
 
-# Migrate if needed
-if visitor.ws_port and not visitor.ws_urls:
-    new_content = content.replace(
-        "WS_PORT =",
-        f"WS_URLS = [{visitor.ws_port}]  # Migrated from WS_PORT\n# WS_PORT ="
-    )
+# Add pandoc to INSTALLED_APPS if not present
+if visitor.installed_apps and "pandoc" not in visitor.installed_apps:
+    apps_str = "INSTALLED_APPS = ["
+    new_apps_str = f'INSTALLED_APPS = [\n    "pandoc",'
+    new_content = new_content.replace(apps_str, new_apps_str)
 
     with open(CONFIGURE_PATH, "w") as f:
         f.write(new_content)

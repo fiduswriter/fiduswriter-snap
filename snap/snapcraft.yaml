@@ -119,6 +119,7 @@ parts:
             - libmagic1
             - nano
             - libxslt1.1
+            - rsync
         build-environment:
             - PARTS_PYTHON_INTERPRETER: python3.13
             - C_INCLUDE_PATH: $CRAFT_STAGE/usr/include/python3.13/
