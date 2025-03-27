@@ -18,7 +18,25 @@ for directory in $version_migrations; do
 	version="$(basename "$directory")"
 	if version_less_than "$previous_version" "$version"; then
 		echo "Running migrations for version $version..."
-		run-parts -v --exit-on-error --regex '.*\.(sh|py)$' "$directory"
+
+		# Process each file individually to handle Python files differently
+		for file in "$directory"/*; do
+			if [ -f "$file" ] && [ -x "$file" ]; then
+				case "$file" in
+					*.py)
+						echo "Running Python migration: $file"
+						PYTHONPATH="${PYTHONPATH:+$PYTHONPATH:}$SNAP_DATA" python3 "$file"
+						;;
+					*.sh)
+						echo "Running shell migration: $file"
+						"$file"
+						;;
+					*)
+						# Skip files that don't match our patterns
+						;;
+				esac
+			fi
+		done
 	fi
 done
 

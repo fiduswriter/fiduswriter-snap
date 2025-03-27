@@ -2,7 +2,6 @@
 import ipaddress
 import sys
 import os
-import configuration
 
 SNAP_DATA = os.environ.get("SNAP_DATA")
 CONFIGURE_PATH = "{}/configuration.py".format(SNAP_DATA)
@@ -10,6 +9,7 @@ CONFIGURE_PATH = "{}/configuration.py".format(SNAP_DATA)
 if not os.path.isfile(CONFIGURE_PATH):
     sys.exit(0)
 
+import configuration
 
 def is_ipaddress(address):
     try:
@@ -21,7 +21,6 @@ def is_ipaddress(address):
 
 with open(CONFIGURE_PATH) as f:
     configuration_str = f.read()
-sys.path.append(SNAP_DATA)
 
 
 if "ACCOUNT_DEFAULT_HTTP_PROTOCOL" not in configuration_str:

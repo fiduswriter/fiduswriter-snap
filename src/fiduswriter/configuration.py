@@ -59,10 +59,10 @@ INSTALLED_APPS = [
     "citation_api_import",
     "languagetool",
     "pandoc",
-    # 'ojs',
-    # 'phplist',
-    # 'gitrepo_export',
-    # 'website',
+    # "ojs",
+    # "phplist",
+    # "gitrepo_export",
+    # "website",
 ]
 
 # Languatool settings. If LT_PORT isn't a valid port number, the languagetool
