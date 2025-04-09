@@ -2,13 +2,17 @@ diff --git a/fiduswriter/base/settings.py b/fiduswriter/base/settings.py
 index a9566e6e1..2bae64458 100755
 --- a/fiduswriter/base/settings.py
 +++ b/fiduswriter/base/settings.py
-@@ -2,16 +2,16 @@ import os
+@@ -2,20 +2,20 @@ import os
 
  # The ports Fidus Writer is running on:
  PORTS = [
 -    8000,
 +    4386,
  ]
+
+ # Allow the server to listen to all network interfaces (0.0.0.0) instead of just localhost
+ # SECURITY WARNING: Setting this to True in production environments could expose your server
+ LISTEN_TO_ALL_INTERFACES = False
 
  # If you want to show debug messages, set DEBUG to True.
 -DEBUG = True
@@ -22,7 +26,7 @@ index a9566e6e1..2bae64458 100755
  # This is the contact email that will be shown in various places all over
  # the site.
  CONTACT_EMAIL = "mail@email.com"
-@@ -30,15 +30,25 @@ PROJECT_PATH = os.environ.get("PROJECT_PATH")
+@@ -34,15 +34,25 @@ PROJECT_PATH = os.environ.get("PROJECT_PATH")
  # SRC_PATH is the root path of the FW sources.
  SRC_PATH = os.environ.get("SRC_PATH")
 

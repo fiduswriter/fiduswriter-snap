@@ -9,8 +9,12 @@
 # the site.
 # CONTACT_EMAIL = 'mail@email.com'
 
-# The port to run on.
-# PORT = 4386
+# The ports to run on.
+# PORTS = [4386]
+
+# Allow the server to listen to all network interfaces (0.0.0.0) instead of just localhost
+# SECURITY WARNING: Setting this to True in production environments could expose your server
+# LISTEN_TO_ALL_INTERFACES = False
 
 # Whether anyone surfing to the site can open an account.
 # REGISTRATION_OPEN = True
