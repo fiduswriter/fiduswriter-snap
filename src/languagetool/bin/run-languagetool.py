@@ -29,11 +29,11 @@ if __name__ == "__main__":
         call(
             [
                 JAVA_BIN,
-                "-Djava.io.tmpdir={}".format(RUN_DIR),
+                f"-Djava.io.tmpdir={RUN_DIR}",
                 "-cp",
-                "{}/lt/languagetool-server.jar".format(SNAP),
+                f"{SNAP}/lt/languagetool-server.jar",
                 "org.languagetool.server.HTTPServer",
                 "--port",
-                "{}".format(LT_PORT),
+                f"{LT_PORT}",
             ]
         )

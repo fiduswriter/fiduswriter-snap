@@ -4,12 +4,13 @@ import sys
 import os
 
 SNAP_DATA = os.environ.get("SNAP_DATA")
-CONFIGURE_PATH = "{}/configuration.py".format(SNAP_DATA)
+CONFIGURE_PATH = f"{SNAP_DATA}/configuration.py"
 
 if not os.path.isfile(CONFIGURE_PATH):
     sys.exit(0)
 
-import configuration
+import configuration  # noqa: E402
+
 
 def is_ipaddress(address):
     try:

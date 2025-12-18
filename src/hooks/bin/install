@@ -8,7 +8,7 @@ SNAP = os.environ.get("SNAP")
 try:
     subprocess.check_output(
         [
-            "{}/bin/set-initial-snap-version".format(SNAP),
+            f"{SNAP}/bin/set-initial-snap-version",
         ],
         stderr=subprocess.STDOUT,
     )

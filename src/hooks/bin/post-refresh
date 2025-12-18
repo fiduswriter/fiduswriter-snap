@@ -6,7 +6,7 @@ import subprocess
 
 SNAP = os.environ.get("SNAP")
 SNAP_DATA = os.environ.get("SNAP_DATA")
-TRANSPILE_DIR = "{}/.transpile".format(SNAP_DATA)
+TRANSPILE_DIR = f"{SNAP_DATA}/.transpile"
 
 # Delete any old transpile dir if there is one.
 if os.path.isdir(TRANSPILE_DIR):
@@ -17,7 +17,7 @@ if os.path.isdir(TRANSPILE_DIR):
 try:
     subprocess.check_output(
         [
-            "{}/bin/run-snap-migrations".format(SNAP),
+            f"{SNAP}/bin/run-snap-migrations",
         ],
         stderr=subprocess.STDOUT,
     )

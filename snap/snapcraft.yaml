@@ -15,7 +15,7 @@ epoch: 8*
 parts:
     python:
         plugin: autotools
-        source: https://www.python.org/ftp/python/3.13.2/Python-3.13.2.tgz
+        source: https://www.python.org/ftp/python/3.14.2/Python-3.14.2.tgz
         autotools-configure-parameters:
             - --enable-optimizations
             - --prefix=/usr
@@ -58,21 +58,21 @@ parts:
             - -etc
             - -lib/systemd
             - -usr/bin/2to3
-            - -usr/bin/2to3-3.13
+            - -usr/bin/2to3-3.14
             - -usr/bin/deb-systemd-helper
             - -usr/bin/deb-systemd-invoke
-            - -usr/bin/easy_install-3.13
+            - -usr/bin/easy_install-3.14
             - -usr/bin/idle3
-            - -usr/bin/idle3.13
+            - -usr/bin/idle3.14
             - -usr/bin/pydoc3
-            - -usr/bin/pydoc3.13
-            - -usr/bin/python3.13-config
+            - -usr/bin/pydoc3.14
+            - -usr/bin/python3.14-config
             - -usr/bin/python3-config
             - -usr/bin/uuidgen
             - -usr/include
             - -usr/lib/*.a
             - -usr/lib/pkgconfig
-            - -usr/lib/python3.13/test
+            - -usr/lib/python3.14/test
             - -usr/sbin
             - -usr/share
             - -var
@@ -85,7 +85,7 @@ parts:
         override-build: |
             export CRYPTOGRAPHY_DONT_BUILD_RUST=1
             craftctl default
-            rm $CRAFT_PART_INSTALL/lib/python3.13/site-packages/fiduswriter/configuration-default.py
+            rm $CRAFT_PART_INSTALL/lib/python3.14/site-packages/fiduswriter/configuration-default.py
         override-pull: |
             craftctl default
             git apply $CRAFT_PROJECT_DIR/src/fiduswriter-patches/fiduswriter-set-defaults.patch
@@ -121,22 +121,22 @@ parts:
             - libxslt1.1
             - rsync
         build-environment:
-            - PARTS_PYTHON_INTERPRETER: python3.13
-            - C_INCLUDE_PATH: $CRAFT_STAGE/usr/include/python3.13/
+            - PARTS_PYTHON_INTERPRETER: python3.14
+            - C_INCLUDE_PATH: $CRAFT_STAGE/usr/include/python3.14/
         stage:
             - -bin/python
             - -bin/python3
-            - -bin/python3.13
+            - -bin/python3.14
         # stage:
         #   # Remove scripts that we'll be replacing with our own
-        #   - -lib/python3.13/site-packages/fiduswriter/configuration-default.py
+        #   - -lib/python3.14/site-packages/fiduswriter/configuration-default.py
 
     fiduswriter-customizations:
         plugin: dump
         source: src/fiduswriter/
         after: [fiduswriter]
         organize:
-            configuration.py: lib/python3.13/site-packages/fiduswriter/configuration-default.py
+            configuration.py: lib/python3.14/site-packages/fiduswriter/configuration-default.py
 
     languagetool:
         plugin: nil
@@ -313,7 +313,7 @@ apps:
             - network-control
             - network-observe
         environment:
-            PYTHONPATH: $SNAP/lib/python3.13/site-packages
+            PYTHONPATH: $SNAP/lib/python3.14/site-packages
             GUNICORN_CMD_ARGS: "--workers=$(( $(nproc) * 2 + 1 )) --timeout 120"
 
     manage:
@@ -323,12 +323,12 @@ apps:
             - network-control
             - network-observe
         environment:
-            PYTHONPATH: $SNAP/lib/python3.13/site-packages
+            PYTHONPATH: $SNAP/lib/python3.14/site-packages
 
     createsuperuser:
         command: "bin/manage.py createsuperuser"
         environment:
-            PYTHONPATH: $SNAP/lib/python3.13/site-packages
+            PYTHONPATH: $SNAP/lib/python3.14/site-packages
 
     configure:
         command: "bin/configure.py"
@@ -337,7 +337,7 @@ apps:
             - network-control
             - network-observe
         environment:
-            PYTHONPATH: $SNAP/lib/python3.13/site-packages
+            PYTHONPATH: $SNAP/lib/python3.14/site-packages
 
     # MySQL daemon
     mysql:
@@ -383,7 +383,7 @@ apps:
             JAVA_HOME: $SNAP/usr/lib/jvm/java-17-openjdk-$SNAP_ARCH
             JAVA_BIN: $SNAP/usr/lib/jvm/java-17-openjdk-$SNAP_ARCH/bin/java
             PATH: $JAVA_HOME/bin:$PATH
-            PYTHONPATH: $SNAP/lib/python3.13/site-packages
+            PYTHONPATH: $SNAP/lib/python3.14/site-packages
         daemon: simple
         restart-condition: always
         plugs: [network-bind]

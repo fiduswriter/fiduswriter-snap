@@ -11,7 +11,7 @@ if __name__ == "__main__":
         print("This script must be run by root")
         sys.exit()
     call(
-        ["{}/bin/fiduswriter".format(SNAP)]
+        [f"{SNAP}/bin/fiduswriter"]
         + sys.argv[1:]
         + ["--pythonpath", SNAP_DATA]
     )

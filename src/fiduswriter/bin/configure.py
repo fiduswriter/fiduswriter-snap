@@ -7,7 +7,7 @@ from subprocess import call, check_output, CalledProcessError
 
 SNAP = os.environ.get("SNAP")
 SNAP_DATA = os.environ.get("SNAP_DATA")
-CONFIGURE_PATH = "{}/configuration.py".format(SNAP_DATA)
+CONFIGURE_PATH = f"{SNAP_DATA}/configuration.py"
 
 
 def is_python(string):
@@ -24,7 +24,7 @@ def is_configuration(f_path):
     try:
         check_output(
             [
-                "{}/bin/fiduswriter".format(SNAP),
+                f"{SNAP}/bin/fiduswriter",
                 "help",
                 "--pythonpath",
                 SNAP_DATA,
@@ -46,13 +46,13 @@ if __name__ == "__main__":
     if not os.path.isfile(CONFIGURE_PATH):
         call(
             [
-                "{}/bin/fiduswriter".format(SNAP),
+                f"{SNAP}/bin/fiduswriter",
                 "startproject",
                 "--pythonpath",
                 SNAP_DATA,
             ]
         )
-    with open(CONFIGURE_PATH, "r") as file:
+    with open(CONFIGURE_PATH) as file:
         configuration = file.read()
     f_path = tempfile.mktemp(prefix="configuration_", suffix=".py")
     with open(f_path, "w") as file:
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     valid_configuration = False
     while valid_configuration is False:
         call(["nano", "--restricted", f_path])
-        with open(f_path, "r") as file:
+        with open(f_path) as file:
             new_configuration = file.read()
         if configuration == new_configuration:
             valid_configuration = True
@@ -82,7 +82,7 @@ if __name__ == "__main__":
         )
         call(
             [
-                "{}/bin/fiduswriter".format(SNAP),
+                f"{SNAP}/bin/fiduswriter",
                 "setup",
                 "--no-force-transpile",
                 "--pythonpath",

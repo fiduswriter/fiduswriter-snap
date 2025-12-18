@@ -9,7 +9,7 @@ CONFIGURE_PATH = f"{SNAP_DATA}/configuration.py"
 if not os.path.isfile(CONFIGURE_PATH):
     sys.exit(0)
 
-with open(CONFIGURE_PATH, "r") as f:
+with open(CONFIGURE_PATH) as f:
     content = f.read()
 
 
