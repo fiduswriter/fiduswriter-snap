@@ -22,7 +22,9 @@ envsubst < "$SNAP/config/logrotate/logrotate.conf" > "$configuration_file"
 
 # If logrotate fails, it could be due to corruption in the status file. Try
 # removing it so we start with a clean slate next time around.
-if ! logrotate --verbose --state "$LOGROTATE_STATUS_FILE" "$configuration_file"; then
+# Output is sent to stderr so it is always visible via: sudo journalctl -u snap.fiduswriter.logrotate.service
+if ! logrotate --verbose --state "$LOGROTATE_STATUS_FILE" "$configuration_file" >&2; then
+    echo "logrotate failed (see output above). Removing status file to start fresh next run." >&2
     rm -f "$LOGROTATE_STATUS_FILE"
     exit 1
 fi
