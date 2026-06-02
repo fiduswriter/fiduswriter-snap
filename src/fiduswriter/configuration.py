@@ -12,6 +12,11 @@
 # The ports to run on.
 # PORTS = [4386]
 
+# ProseMirror backend used by the document WebSocket consumer.
+# "python" - pure-Python prosemirror package (default).
+# "rust"   - prosemirror-rs Rust extension (requires `pip install prosemirror-rs`). EXPERIMENTAL
+# PROSEMIRROR_BACKEND = "python"
+
 # Allow the server to listen to all network interfaces (0.0.0.0) instead of just localhost
 # SECURITY WARNING: Setting this to True in production environments could expose your server
 # LISTEN_TO_ALL_INTERFACES = False
@@ -68,6 +73,29 @@ INSTALLED_APPS = [
     # "gitrepo_export",
     # "website",
 ]
+
+# A list of apps to remove from the default installation
+# REMOVED_APPS = [
+#     # Example: Disable two-factor authentication entirely
+#     # 'django_otp',
+#     # Example: Disable brute-force protection (for development only)
+#     # 'axes',
+# ]
+
+# E2EE_MODE controls whether end-to-end encrypted documents are allowed.
+# EXPERIMENTAL: E2EE_MODE is an experimental mode that is still subject to changes
+# and that has not been independently reviewed by security experts yet.
+#
+# 'disabled'  - No E2EE support. All documents are unencrypted.
+# 'enabled'   - Both E2EE and non-encrypted documents are supported. EXPERIMENTAL
+# 'required'  - Only E2EE documents are allowed. EXPERIMENTAL
+# E2EE_MODE = "disabled"
+
+# EDITOR_SAVE_MODE controls how the editor persists document changes.
+#   "collaborative" - WebSocket-based real-time collaboration (default).
+#   "direct"        - Periodic REST saves without real-time collaboration.
+#   "external"      - No built-in saving; external plugins handle persistence.
+# EDITOR_SAVE_MODE = "collaborative"
 
 # Languatool settings. If LT_PORT isn't a valid port number, the languagetool
 # daemon will not run.
