@@ -11,9 +11,9 @@ contact: https://www.fiduswriter.org/help-us/
 donation: https://www.fiduswriter.org/donate/
 base: core24
 platforms:
-    - amd64
-    - arm64
-    - riscv64
+    amd64:
+    arm64:
+    riscv64:
 confinement: strict
 grade: stable
 epoch: 8*
