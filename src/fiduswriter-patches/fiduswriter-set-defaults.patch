@@ -1,24 +1,22 @@
-diff --git a/fiduswriter/base/settings.py b/fiduswriter/base/settings.py
-index a9566e6e1..2bae64458 100755
 --- a/fiduswriter/base/settings.py
 +++ b/fiduswriter/base/settings.py
-@@ -2,20 +2,20 @@ import os
-
- # The ports Fidus Writer is running on:
+@@ -4,7 +4,7 @@
+ # For multi-server setups, this must be the FULL list of ports/connections
+ # across all servers so that document routing is consistent everywhere.
  PORTS = [
 -    8000,
 +    4386,
  ]
-
- # Allow the server to listen to all network interfaces (0.0.0.0) instead of just localhost
- # SECURITY WARNING: Setting this to True in production environments could expose your server
+ 
+ # Ports this server instance actually binds to. Defaults to PORTS.
+@@ -16,12 +16,12 @@
  LISTEN_TO_ALL_INTERFACES = False
-
+ 
  # If you want to show debug messages, set DEBUG to True.
 -DEBUG = True
 +DEBUG = False
  SOURCE_MAPS = False
-
+ 
  # This determines whether the server is used for testing and will let the
  # users know upon signup know that their documents may disappear.
 -TEST_SERVER = True
@@ -26,10 +24,10 @@ index a9566e6e1..2bae64458 100755
  # This is the contact email that will be shown in various places all over
  # the site.
  CONTACT_EMAIL = "mail@email.com"
-@@ -34,15 +34,25 @@ PROJECT_PATH = os.environ.get("PROJECT_PATH")
+@@ -53,15 +53,25 @@
  # SRC_PATH is the root path of the FW sources.
  SRC_PATH = os.environ.get("SRC_PATH")
-
+ 
 +SNAP_DATA = os.environ.get("SNAP_DATA")
 +DATABASE_PASSWORD = ""
 +PASSWORD_PATH = "{}/mysql/fiduswriter_password".format(SNAP_DATA)
@@ -50,7 +48,7 @@ index a9566e6e1..2bae64458 100755
 +        "HOST": "/tmp/sockets/mysql.sock"
      }
  }
-
+ 
 +AUTO_SETUP = True
 +
  # Will let any user not delete more than 5000 bibliography entries
